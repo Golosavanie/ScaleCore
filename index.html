@@ -684,6 +684,151 @@ main{position:relative;z-index:2}
 .cat-arrow svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
 /* ============================================================
+   EXTENDED SERVICES (новые большие карточки)
+   ============================================================ */
+.extended-services{
+  margin-top:110px;
+  padding-top:80px;
+  border-top:1px solid rgba(255,255,255,.06);
+  position:relative;
+}
+.extended-services::before{
+  content:'';
+  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  width:min(280px,60%);height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+}
+.svc-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(360px,1fr));
+  gap:20px;
+}
+.svc-card{
+  position:relative;
+  padding:32px 30px;
+  border-radius:26px;
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012));
+  border:1px solid rgba(255,255,255,.09);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:transform .55s var(--ease), border-color .5s, box-shadow .55s, background .5s;
+  backdrop-filter:blur(12px);
+  will-change:transform;
+  transform-style:preserve-3d;
+}
+.svc-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.14),transparent 55%);
+  opacity:0;transition:opacity .5s;pointer-events:none;
+}
+.svc-card::after{
+  content:'';position:absolute;top:0;left:30%;right:30%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+  opacity:0;transition:opacity .5s, left .5s, right .5s;pointer-events:none;
+}
+.svc-card:hover{
+  border-color:rgba(255,255,255,.3);
+  transform:translateY(-8px);
+  box-shadow:0 34px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05),0 0 50px rgba(140,130,255,.12);
+}
+.svc-card:hover::before{opacity:1}
+.svc-card:hover::after{opacity:1;left:0;right:0}
+
+.svc-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.svc-icon{
+  width:60px;height:60px;border-radius:18px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:transform .55s var(--ease-spring), background .5s, color .5s, box-shadow .5s;
+}
+.svc-card:hover .svc-icon{
+  background:#fff;color:#000;
+  transform:rotate(-8deg) scale(1.1);
+  box-shadow:0 14px 34px rgba(255,255,255,.25);
+}
+.svc-icon svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.svc-title{
+  font-size:21px;font-weight:800;letter-spacing:-.5px;line-height:1.2;
+  background:linear-gradient(180deg,#fff,#aaa);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.svc-question{
+  font-size:14px;color:#d0d0d8;line-height:1.65;font-weight:600;
+  margin-bottom:20px;
+  padding:14px 16px;
+  border-radius:14px;
+  background:rgba(0,0,0,.3);
+  border:1px solid rgba(255,255,255,.06);
+  position:relative;
+}
+.svc-question::before{
+  content:'';
+  position:absolute;left:0;top:14px;bottom:14px;width:2px;
+  background:linear-gradient(180deg,#fff,rgba(160,150,255,.5));
+  border-radius:2px;
+}
+
+.svc-block{margin-bottom:16px}
+.svc-block:last-of-type{margin-bottom:0}
+.svc-block-label{
+  font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.svc-block-label::before{
+  content:'';width:4px;height:4px;border-radius:50%;background:var(--muted);
+}
+.svc-block-text{
+  font-size:13.5px;color:#c8c8d0;line-height:1.65;
+}
+.svc-block-text strong{color:#fff;font-weight:700}
+
+.svc-footer{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
+  padding-top:20px;margin-top:20px;
+  border-top:1px solid rgba(255,255,255,.08);
+  flex-wrap:wrap;
+}
+.svc-pricing{display:flex;flex-direction:column;gap:4px;min-width:0}
+.svc-price{
+  font-size:24px;font-weight:800;letter-spacing:-.8px;line-height:1;
+  background:linear-gradient(180deg,#fff,#999);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.svc-price small{
+  font-size:12px;font-weight:700;letter-spacing:.5px;
+  color:var(--muted);-webkit-text-fill-color:var(--muted);
+  margin-left:4px;
+}
+.svc-duration{
+  font-size:11px;color:var(--muted);font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+}
+.svc-btn{
+  padding:12px 20px;border-radius:14px;border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.04);color:#fff;
+  font-size:11px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;
+  cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:all .4s var(--ease);
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.svc-btn:hover{
+  background:#fff;color:#000;border-color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 12px 32px rgba(255,255,255,.35);
+  letter-spacing:1.8px;
+}
+.svc-btn svg{
+  width:14px;height:14px;stroke:currentColor;fill:none;
+  stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .4s var(--ease);
+}
+.svc-btn:hover svg{transform:translateX(3px)}
+
+/* ============================================================
    PRICING
    ============================================================ */
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;padding-top:20px}
@@ -1119,6 +1264,7 @@ input[type="number"]{-moz-appearance:textfield}
   .reviews-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
   .hero-stats{gap:40px;padding:28px}
   .steps{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .svc-grid{grid-template-columns:1fr}
 }
 @media (max-width:640px){
   .bottom-nav{bottom:14px;padding:6px;gap:2px;border-radius:28px}
@@ -1151,6 +1297,14 @@ input[type="number"]{-moz-appearance:textfield}
   .budget-chip{padding:14px 6px;font-size:12px}
   .budget-picker-label{font-size:10px;letter-spacing:1.5px}
   .budget-picker-label b{font-size:14px}
+  .extended-services{margin-top:80px;padding-top:60px}
+  .svc-card{padding:24px 22px;border-radius:22px}
+  .svc-title{font-size:18px}
+  .svc-icon{width:52px;height:52px;border-radius:16px}
+  .svc-icon svg{width:24px;height:24px}
+  .svc-price{font-size:20px}
+  .svc-btn{width:100%;justify-content:center}
+  .svc-footer{flex-direction:column;align-items:stretch}
 }
 @media (max-width:380px){
   .nav-item span{display:none}
@@ -1377,6 +1531,16 @@ input[type="number"]{-moz-appearance:textfield}
       <p class="section-sub reveal">Готовые отраслевые решения — быстро, качественно, с учётом специфики ниши</p>
     </div>
     <div class="catalog-grid" id="catalog-grid"></div>
+
+    <!-- ============ НОВЫЙ БЛОК: РАСШИРЕННЫЕ УСЛУГИ ============ -->
+    <div class="extended-services">
+      <div class="section-head" style="margin-bottom:48px">
+        <div class="section-label reveal">Услуги и цены</div>
+        <h2 class="section-title reveal">Что мы делаем</h2>
+        <p class="section-sub reveal">Авито, сайты и система продаж — по отдельности или в связке</p>
+      </div>
+      <div class="svc-grid" id="svc-grid"></div>
+    </div>
   </section>
 
   <section class="page" id="page-pricing" data-page="pricing">
@@ -1528,6 +1692,10 @@ input[type="number"]{-moz-appearance:textfield}
             <option>Корпоративный сайт</option>
             <option>Интернет-магазин</option>
             <option>Веб-приложение</option>
+            <option>Аудит объявления</option>
+            <option>Аудит магазина</option>
+            <option>Магазин под ключ</option>
+            <option>Система продаж</option>
           </select>
         </div>
         <div class="input-group area">
@@ -1543,7 +1711,7 @@ input[type="number"]{-moz-appearance:textfield}
 /* ============================================================
    CONFIG
    Если фронт обслуживается тем же сервером (Railway) — оставь пусто.
-   Если фронт лежит отдельно (GitHub Pages) — укажи URL бэкенда, например:
+   Если фронт лежит отдельно — укажи URL бэкенда:
    const API_BASE = 'https://scalecore.up.railway.app';
    ============================================================ */
 const API_BASE = '';
@@ -1570,6 +1738,62 @@ const CATALOG = [
   { id:'edu', name:'Образование и курсы', desc:'Каталог курсов, расписание, личный кабинет студента.', price:'от 45 000 ₽', icon:'<path d="M22 10L12 4 2 10l10 6 10-6z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>' },
   { id:'fitness', name:'Фитнес и спорт', desc:'Расписание, тренеры, абонементы, онлайн-запись.', price:'от 25 000 ₽', icon:'<path d="M6 4v16"/><path d="M18 4v16"/><path d="M2 8v8"/><path d="M22 8v8"/><path d="M6 12h12"/>' },
   { id:'beauty', name:'Красота и услуги', desc:'Онлайн-запись, прайс-лист, отзывы, галерея работ.', price:'от 20 000 ₽', icon:'<path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.7 6.5 19.5l1-6.3L3 8.9 9 8z"/>' }
+];
+
+/* ============================================================
+   EXTENDED SERVICES — новые карточки
+   ============================================================ */
+const EXTENDED_SERVICES = [
+  {
+    id: 'audit-listing',
+    title: 'Аудит объявления',
+    question: 'Заявки есть, а сделок нет? Просмотры идут, а не пишут? Разбираю одно объявление: заголовок, описание, цена, подача. Показываю, где клиент уходит.',
+    includes: 'Анализ объявления, сравнение с конкурентами, план исправлений.',
+    result: 'Понимаешь, что чинить в первую очередь.',
+    price: '5 000 ₽',
+    duration: '1 день',
+    icon: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/><path d="M8 11h6"/><path d="M11 8v6"/>'
+  },
+  {
+    id: 'audit-shop',
+    title: 'Аудит магазина',
+    question: 'Магазин есть, а заявок мало? Не понимаешь, какие объявления работают, а какие мёртвые? Разбираю весь профиль: какие тянут, какие нет, где слив.',
+    includes: 'Анализ всех объявлений, чистка дублей, план по каждому.',
+    result: 'Понимаешь, что чинить, а что удалить.',
+    price: '15 000 ₽',
+    duration: '2–3 дня',
+    icon: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4"/><path d="M10 17.5h4"/>'
+  },
+  {
+    id: 'shop-turnkey',
+    title: 'Магазин под ключ',
+    question: 'Нет времени вести Авито? Или не понимаешь, как устроена площадка? Создаю магазин: объявления, упаковка, настройка. Плюс сопровождение 7–14 дней.',
+    includes: 'Создание объявлений, упаковка, настройка, сопровождение.',
+    result: 'Готовый канал заявок.',
+    price: 'от 30 000 ₽',
+    duration: '3–5 дней',
+    icon: '<path d="M3 3h18l-2 12H5z"/><path d="M8 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M17 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M8 15v4"/><path d="M17 15v4"/>'
+  },
+  {
+    id: 'websites',
+    title: 'Сайты',
+    question: 'Клиент ищет в интернете — тебя там нет? Или сайт есть, но не продаёт? Собираю сайт, который отвечает на вопросы клиента и ведёт к заявке.',
+    includes: 'Структура, дизайн, тексты, надёжность.',
+    result: 'Сайт, который продаёт, а не просто висит.',
+    price: 'Лендинг — от 40 000 ₽<br>Многостраничник — от 80 000 ₽',
+    duration: 'Лендинг — 2–4 дня<br>Многостраничник — 6–12 дней',
+    icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M2 8h20"/>'
+  },
+  {
+    id: 'sales-system',
+    title: 'Система продаж',
+    question: 'Авито приводит. Сайт закрывает. Вместе — поток заявок. Настраиваю связку: объявления, сайт, чтобы каждая площадка работала на результат.',
+    includes: 'Авито, сайт, связка.',
+    result: 'Система, где каждая площадка работает на заявки.',
+    price: 'от 80 000 ₽',
+    duration: 'Срок от 2 недель',
+    icon: '<circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/>'
+  }
 ];
 
 const PRICING = [
@@ -1612,6 +1836,7 @@ window.addEventListener('load', () => {
   }, 4000);
 
   renderCatalog();
+  renderExtendedServices();
   renderPricing();
   loadReviews();
   initStarsInput();
@@ -1692,6 +1917,63 @@ function orderService(id){
     const ta = document.querySelector('#order-form textarea[name="description"]');
     if (ta) ta.value = `Интересует разработка: ${c.name}. ${c.desc}`;
     sel.dispatchEvent(new Event('change'));
+  }, 500);
+}
+
+/* ============================================================
+   EXTENDED SERVICES
+   ============================================================ */
+function renderExtendedServices(){
+  const grid = document.getElementById('svc-grid');
+  if (!grid) return;
+  grid.innerHTML = EXTENDED_SERVICES.map(s => `
+    <div class="svc-card reveal">
+      <div class="svc-header">
+        <div class="svc-icon"><svg viewBox="0 0 24 24">${s.icon}</svg></div>
+        <div class="svc-title">${s.title}</div>
+      </div>
+      <div class="svc-question">${s.question}</div>
+      <div class="svc-block">
+        <div class="svc-block-label">Что входит</div>
+        <div class="svc-block-text">${s.includes}</div>
+      </div>
+      <div class="svc-block">
+        <div class="svc-block-label">Результат</div>
+        <div class="svc-block-text">${s.result}</div>
+      </div>
+      <div class="svc-footer">
+        <div class="svc-pricing">
+          <div class="svc-price">${s.price}</div>
+          <div class="svc-duration">${s.duration}</div>
+        </div>
+        <button class="svc-btn" onclick="orderExtendedService('${s.id}')">
+          Обсудить
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function orderExtendedService(id){
+  const s = EXTENDED_SERVICES.find(x => x.id === id);
+  if (!s) return;
+  go('order');
+  setTimeout(() => {
+    const sel = document.getElementById('order-type');
+    if (sel) {
+      // Мапим на существующие типы или custom
+      const map = { 'audit-listing':'custom', 'audit-shop':'custom', 'shop-turnkey':'shop', 'websites':'landing', 'sales-system':'custom' };
+      sel.value = map[id] || 'custom';
+      sel.dispatchEvent(new Event('change'));
+    }
+    const ta = document.querySelector('#order-form textarea[name="description"]');
+    if (ta) {
+      const includes = s.includes.replace(/<br>/g, ', ');
+      const price = s.price.replace(/<br>/g, ' / ');
+      const duration = s.duration.replace(/<br>/g, ' / ');
+      ta.value = `Интересует услуга: ${s.title}.\n\n${s.question}\n\nЧто входит: ${includes}\nРезультат: ${s.result}\nСтоимость: ${price}\nСрок: ${duration}`;
+    }
   }, 500);
 }
 
@@ -2029,7 +2311,7 @@ function toast(msg, ok = true){
    ============================================================ */
 function initCardCursor(){
   document.addEventListener('mousemove', e => {
-    const card = e.target.closest('.cat-card, .btn-ghost');
+    const card = e.target.closest('.cat-card, .svc-card, .btn-ghost');
     if (!card) return;
     const r = card.getBoundingClientRect();
     card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
@@ -2104,7 +2386,7 @@ function initMagneticButtons(){
 
 function initTilt(){
   if (matchMedia('(pointer: coarse)').matches) return;
-  const cards = document.querySelectorAll('.cat-card, .price-card, .review-card, .step');
+  const cards = document.querySelectorAll('.cat-card, .svc-card, .price-card, .review-card, .step');
   cards.forEach(card => {
     card.addEventListener('mousemove', e => {
       const r = card.getBoundingClientRect();

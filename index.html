@@ -62,7 +62,7 @@ body:hover .cursor-glow{opacity:1}
 @media (max-width:900px){.cursor-glow{display:none}}
 
 /* ============================================================
-   ФОН — ГЛУБОКАЯ ТЕМНОТА С ЛЕГКИМ ПЕРЕЛИВОМ
+   ФОН
    ============================================================ */
 #bg-layer{
   position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
@@ -123,7 +123,6 @@ body:hover .cursor-glow{opacity:1}
   50%{opacity:1;transform:translateX(-50%) scale(1.05)}
 }
 
-/* Аврора-орбы */
 .bg-orb{
   position:absolute;border-radius:50%;
   filter:blur(90px);
@@ -146,18 +145,9 @@ body:hover .cursor-glow{opacity:1}
   background:radial-gradient(circle,rgba(70,140,220,.12),transparent 70%);
   animation:orbFloat3 29s ease-in-out infinite alternate;
 }
-@keyframes orbFloat1{
-  0%{transform:translate(0,0) scale(1)}
-  100%{transform:translate(140px,80px) scale(1.15)}
-}
-@keyframes orbFloat2{
-  0%{transform:translate(0,0) scale(1.05)}
-  100%{transform:translate(-120px,-90px) scale(.95)}
-}
-@keyframes orbFloat3{
-  0%{transform:translate(0,0) scale(.95)}
-  100%{transform:translate(60px,-110px) scale(1.1)}
-}
+@keyframes orbFloat1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(140px,80px) scale(1.15)}}
+@keyframes orbFloat2{0%{transform:translate(0,0) scale(1.05)}100%{transform:translate(-120px,-90px) scale(.95)}}
+@keyframes orbFloat3{0%{transform:translate(0,0) scale(.95)}100%{transform:translate(60px,-110px) scale(1.1)}}
 
 .bg-grid{
   position:absolute;inset:0;
@@ -184,7 +174,6 @@ body:hover .cursor-glow{opacity:1}
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* звёздная пыль */
 .bg-stars{
   position:absolute;inset:0;
   background-image:
@@ -198,18 +187,14 @@ body:hover .cursor-glow{opacity:1}
   animation:twinkle 8s ease-in-out infinite alternate;
   opacity:.6;
 }
-@keyframes twinkle{
-  0%{opacity:.35}
-  50%{opacity:.75}
-  100%{opacity:.5}
-}
+@keyframes twinkle{0%{opacity:.35}50%{opacity:.75}100%{opacity:.5}}
 
 @media (prefers-reduced-motion: reduce){
   .bg-flow,.bg-conic,.bg-topglow,.bg-orb,.bg-grid,.bg-stars{animation:none}
 }
 
 /* ============================================================
-   FLOATING SIDE ICONS (Home Page Only · Desktop & Tablet)
+   FLOATING SIDE ICONS
    ============================================================ */
 .float-icons{
   position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -219,36 +204,39 @@ body:hover .cursor-glow{opacity:1}
   .float-icons{display:block}
 }
 
+/* Каждый f-icon — одна иконка с индивидуальным размером/позицией/углом */
 .f-icon{
   position:absolute;
-  top:var(--y);
-  will-change:transform, opacity;
+  top: var(--y, 20%);
+  z-index: var(--z, 1);
+  will-change: transform, opacity;
   transition:
     transform 1.05s cubic-bezier(.34,1.4,.5,1),
     opacity .8s cubic-bezier(.16,1,.3,1);
-  transition-delay:var(--exit-delay,0s);
+  transition-delay: var(--exit-delay, 0s);
+  pointer-events: none;
 }
-.f-icon[data-side="left"]{ left:var(--x) }
-.f-icon[data-side="right"]{ right:var(--x) }
+.f-icon[data-side="left"]{ left: var(--x, -30px) }
+.f-icon[data-side="right"]{ right: var(--x, -30px) }
 
-body:not(.home-page) .f-icon{ opacity:0 }
+/* Вылет при уходе с главной */
+body:not(.home-page) .f-icon{ opacity: 0 }
 body:not(.home-page) .f-icon[data-side="left"]{
-  transform:translate(-180%,-30px) rotate(-16deg) scale(.55);
+  transform: translate(-220%, -40px) scale(.55);
 }
 body:not(.home-page) .f-icon[data-side="right"]{
-  transform:translate(180%,30px) rotate(16deg) scale(.55);
+  transform: translate(220%, 40px) scale(.55);
 }
-body:not(.home-page) .f-icon-card{ pointer-events:none }
 
-.f-icon-parallax{ will-change:transform }
+.f-icon-parallax{ will-change: transform }
 
 .f-icon-float{
-  animation:var(--anim,iconFloatA) var(--dur,9s) ease-in-out infinite;
-  animation-delay:var(--delay,0s);
-  will-change:transform;
+  animation: var(--anim, iconFloatA) var(--dur, 9s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform;
 }
 
-/* 6 разных траекторий плавания */
+/* 6 разных траекторий парения */
 @keyframes iconFloatA{
   0%,100%{transform:rotate(var(--rot,0deg)) translate(0,0)}
   25%{transform:rotate(calc(var(--rot,0deg) + 2deg)) translate(6px,-12px)}
@@ -282,94 +270,102 @@ body:not(.home-page) .f-icon-card{ pointer-events:none }
   65%{transform:rotate(calc(var(--rot,0deg) - 2deg)) translate(10px,-6px)}
 }
 
-/* Карточка */
+/* Карточка иконки — размер задаётся через --size */
 .f-icon-card{
   position:relative;
-  width:160px;height:160px;
-  border-radius:36px;
-  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.015));
-  border:1px solid rgba(255,255,255,.14);
+  width: var(--size, 160px);
+  height: var(--size, 160px);
+  border-radius: calc(var(--size, 160px) * 0.22);
+  background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.015));
+  border:1px solid rgba(255,255,255,.15);
   backdrop-filter:blur(20px) saturate(180%);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   display:flex;align-items:center;justify-content:center;
   pointer-events:auto;cursor:pointer;
   transition:transform .7s cubic-bezier(.34,1.4,.5,1), border-color .5s, background .5s, filter .5s;
   filter:
-    drop-shadow(0 24px 40px rgba(0,0,0,.55))
-    drop-shadow(0 0 30px rgba(140,130,255,.12));
+    drop-shadow(0 24px 45px rgba(0,0,0,.60))
+    drop-shadow(0 0 30px rgba(140,130,255,.14));
   will-change:transform,filter;
 }
 
-/* Плавное затухание наружного края — чуть меньше половины (~46%) */
+/* Плавное затухание наружного края (~46%) */
 .f-icon[data-side="left"] .f-icon-card{
   -webkit-mask-image:linear-gradient(to right,
     transparent 0%,
-    rgba(0,0,0,.15) 12%,
-    rgba(0,0,0,.55) 30%,
+    rgba(0,0,0,.10) 10%,
+    rgba(0,0,0,.45) 28%,
     #000 46%,
     #000 100%);
   mask-image:linear-gradient(to right,
     transparent 0%,
-    rgba(0,0,0,.15) 12%,
-    rgba(0,0,0,.55) 30%,
+    rgba(0,0,0,.10) 10%,
+    rgba(0,0,0,.45) 28%,
     #000 46%,
     #000 100%);
 }
 .f-icon[data-side="right"] .f-icon-card{
   -webkit-mask-image:linear-gradient(to left,
     transparent 0%,
-    rgba(0,0,0,.15) 12%,
-    rgba(0,0,0,.55) 30%,
+    rgba(0,0,0,.10) 10%,
+    rgba(0,0,0,.45) 28%,
     #000 46%,
     #000 100%);
   mask-image:linear-gradient(to left,
     transparent 0%,
-    rgba(0,0,0,.15) 12%,
-    rgba(0,0,0,.55) 30%,
+    rgba(0,0,0,.10) 10%,
+    rgba(0,0,0,.45) 28%,
     #000 46%,
     #000 100%);
 }
 
 .f-icon-card::before{
   content:'';position:absolute;inset:0;border-radius:inherit;
-  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.18),transparent 60%);
+  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.22),transparent 62%);
   opacity:.55;pointer-events:none;transition:opacity .5s;
 }
 .f-icon-card::after{
   content:'';position:absolute;inset:-1px;border-radius:inherit;
-  background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 40%,transparent 60%,rgba(160,150,255,.25));
+  background:linear-gradient(135deg,rgba(255,255,255,.38),transparent 40%,transparent 60%,rgba(160,150,255,.28));
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask-composite:exclude;
-  padding:1px;pointer-events:none;opacity:.6;transition:opacity .5s;
+  padding:1px;pointer-events:none;opacity:.65;transition:opacity .5s;
 }
 .f-icon-card svg{
-  width:60px;height:60px;
-  color:#fff;opacity:.82;
+  width: calc(var(--size, 160px) * 0.38);
+  height: calc(var(--size, 160px) * 0.38);
+  color:#fff;opacity:.85;
   position:relative;z-index:1;
   transition:opacity .5s, filter .5s, transform .6s cubic-bezier(.34,1.4,.5,1);
 }
 
-/* Hover */
 .f-icon-card:hover{
-  transform:scale(1.12) rotate(-2deg);
-  border-color:rgba(255,255,255,.5);
-  background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
+  transform:scale(1.10) rotate(-2deg);
+  border-color:rgba(255,255,255,.55);
+  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.05));
   filter:
-    drop-shadow(0 30px 55px rgba(0,0,0,.75))
-    drop-shadow(0 0 50px rgba(160,150,255,.5));
+    drop-shadow(0 32px 60px rgba(0,0,0,.78))
+    drop-shadow(0 0 55px rgba(160,150,255,.55));
 }
 .f-icon-card:hover::before{opacity:1}
 .f-icon-card:hover::after{opacity:1}
 .f-icon-card:hover svg{
   opacity:1;
-  filter:drop-shadow(0 0 16px rgba(255,255,255,.75));
-  transform:scale(1.05);
+  filter:drop-shadow(0 0 16px rgba(255,255,255,.8));
+  transform:scale(1.06);
 }
 
-/* Планшеты — чуть меньше */
+/* Планшеты — уменьшаем */
 @media (max-width:1279px){
-  .f-icon-card{width:120px;height:120px;border-radius:28px}
-  .f-icon-card svg{width:46px;height:46px}
+  .f-icon-card{
+    width: calc(var(--size, 160px) * 0.72);
+    height: calc(var(--size, 160px) * 0.72);
+    border-radius: calc(var(--size, 160px) * 0.16);
+  }
+  .f-icon-card svg{
+    width: calc(var(--size, 160px) * 0.27);
+    height: calc(var(--size, 160px) * 0.27);
+  }
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -533,6 +529,7 @@ main{position:relative;z-index:2}
 }
 .reveal.in{opacity:1;transform:none;filter:none}
 
+/* ИСПРАВЛЕНИЕ: section-title на отдельной строке, не наезжает на label */
 .section-head{text-align:center;margin-bottom:56px}
 .section-label{
   display:inline-block;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
@@ -543,11 +540,12 @@ main{position:relative;z-index:2}
 }
 .section-label:hover{color:#fff;border-color:rgba(255,255,255,.25);letter-spacing:4px}
 .section-title{
-  font-size:clamp(28px,4.2vw,54px);font-weight:800;letter-spacing:-2px;line-height:1.05;
+  display:block;
+  font-size:clamp(28px,4.2vw,54px);font-weight:800;letter-spacing:-2px;line-height:1.08;
   background:linear-gradient(180deg,#fff 0,#999 130%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   position:relative;
-  display:inline-block;
+  padding-top:2px;
 }
 .section-sub{font-size:15px;color:var(--muted);margin-top:14px;max-width:620px;margin-left:auto;margin-right:auto}
 
@@ -710,7 +708,8 @@ main{position:relative;z-index:2}
 /* ============================================================
    PRICING
    ============================================================ */
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;padding-top:20px}
+/* ИСПРАВЛЕНИЕ: overflow:visible, чтобы бейдж «Популярный» был виден */
 .price-card{
   padding:32px 28px;border-radius:24px;
   background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
@@ -719,13 +718,12 @@ main{position:relative;z-index:2}
   transition:transform .55s var(--ease), border-color .5s, box-shadow .55s;
   backdrop-filter:blur(12px);
   will-change:transform;
-  overflow:hidden;
   transform-style:preserve-3d;
 }
 .price-card::after{
   content:'';position:absolute;top:0;left:30%;right:30%;height:1px;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
-  opacity:0;transition:opacity .5s, left .5s, right .5s;pointer-events:none;
+  opacity:0;transition:opacity .5s, left .5s, right .5s;pointer-events:none;border-radius:inherit;
 }
 .price-card:hover{
   border-color:rgba(255,255,255,.3);
@@ -743,12 +741,20 @@ main{position:relative;z-index:2}
   0%,100%{box-shadow:0 20px 70px rgba(140,130,255,.12),0 0 0 0 rgba(140,130,255,0)}
   50%{box-shadow:0 22px 80px rgba(140,130,255,.2),0 0 60px rgba(140,130,255,.12)}
 }
+/* ИСПРАВЛЕНИЕ: z-index:5 + анимация с сохранением translateX(-50%) */
 .price-badge{
-  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  position:absolute;top:-12px;left:50%;
+  transform:translateX(-50%);
+  z-index:5;
   padding:5px 14px;border-radius:20px;background:#fff;color:#000;
   font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;
-  box-shadow:0 8px 24px rgba(255,255,255,.3);
-  animation:badgeFloat 4s ease-in-out infinite;
+  box-shadow:0 8px 24px rgba(255,255,255,.35),0 0 24px rgba(255,255,255,.25);
+  animation:priceBadgeFloat 4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes priceBadgeFloat{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(-4px)}
 }
 .price-name{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:16px}
 .price-num{
@@ -1231,13 +1237,9 @@ input[type="number"]{-moz-appearance:textfield}
 </head>
 <body>
 
-<!-- ============ SCROLL PROGRESS ============ -->
 <div class="scroll-progress"><div class="scroll-progress-bar" id="scroll-bar"></div></div>
-
-<!-- ============ CURSOR GLOW ============ -->
 <div class="cursor-glow" id="cursor-glow"></div>
 
-<!-- ============ ФОН ============ -->
 <div id="bg-layer">
   <div class="bg-flow"></div>
   <div class="bg-conic"></div>
@@ -1253,7 +1255,6 @@ input[type="number"]{-moz-appearance:textfield}
 
 <div id="flash"></div>
 
-<!-- ============ INTRO ============ -->
 <div id="intro">
   <div class="bg-flow"></div>
   <div class="bg-conic"></div>
@@ -1270,41 +1271,61 @@ input[type="number"]{-moz-appearance:textfield}
 
 <div id="toast-container"></div>
 
-<!-- ============ FLOATING SIDE ICONS (Home Only · Desktop & Tablet) ============ -->
+<!-- ============ FLOATING SIDE ICONS ============ -->
 <div class="float-icons" id="float-icons" aria-hidden="true">
 
-  <!-- ============ ЛЕВАЯ СТОРОНА ============ -->
-  <div class="f-icon" data-side="left" data-depth="1.15"
-       style="--x:-24px;--y:7%;--rot:-12deg;--anim:iconFloatA;--dur:9s;--delay:-1s;--exit-delay:0s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <!-- ===================== ЛЕВЫЙ КЛАСТЕР ===================== -->
+  <!-- TOP (мелкая, сзади): Cloud -->
   <div class="f-icon" data-side="left" data-depth="0.85"
-       style="--x:-38px;--y:31%;--rot:-8deg;--anim:iconFloatB;--dur:11s;--delay:-2.5s;--exit-delay:.07s;">
+       style="--x:-25px;--y:22%;--rot:-14deg;--size:110px;--z:1;--anim:iconFloatA;--dur:9s;--delay:-1s;--exit-delay:0s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
         <div class="f-icon-card">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
           </svg>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="f-icon hide-md" data-side="left" data-depth="1.3"
-       style="--x:-22px;--y:55%;--rot:-14deg;--anim:iconFloatC;--dur:8.5s;--delay:-0.5s;--exit-delay:.14s;">
+  <!-- MIDDLE (самая большая, между верхней и нижней): Server rack -->
+  <div class="f-icon" data-side="left" data-depth="1.2"
+       style="--x:-52px;--y:28%;--rot:-7deg;--size:190px;--z:2;--anim:iconFloatB;--dur:11s;--delay:-2.5s;--exit-delay:.07s;">
+    <div class="f-icon-parallax">
+      <div class="f-icon-float">
+        <div class="f-icon-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="7" rx="2"/>
+            <rect x="2" y="14" width="20" height="7" rx="2"/>
+            <line x1="6" y1="6.5" x2="6.01" y2="6.5"/>
+            <line x1="6" y1="17.5" x2="6.01" y2="17.5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM (в 1.5× меньше средней, впереди всех): Terminal -->
+  <div class="f-icon" data-side="left" data-depth="1.0"
+       style="--x:-18px;--y:44%;--rot:-20deg;--size:130px;--z:3;--anim:iconFloatC;--dur:10s;--delay:-3s;--exit-delay:.14s;">
+    <div class="f-icon-parallax">
+      <div class="f-icon-float">
+        <div class="f-icon-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="18" rx="2.5"/>
+            <polyline points="7 8.5 10 11.5 7 14.5"/>
+            <line x1="12" y1="14.5" x2="17" y2="14.5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ПРАВЫЙ КЛАСТЕР ===================== -->
+  <!-- TOP (мелкая, сзади): Code brackets -->
+  <div class="f-icon" data-side="right" data-depth="0.85"
+       style="--x:-25px;--y:24%;--rot:13deg;--size:110px;--z:1;--anim:iconFloatE;--dur:9.5s;--delay:-1.5s;--exit-delay:.04s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
         <div class="f-icon-card">
@@ -1317,77 +1338,34 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
   </div>
 
-  <div class="f-icon hide-md" data-side="left" data-depth="0.9"
-       style="--x:-35px;--y:79%;--rot:-10deg;--anim:iconFloatD;--dur:10s;--delay:-3s;--exit-delay:.21s;">
+  <!-- MIDDLE (самая большая): Taxi -->
+  <div class="f-icon" data-side="right" data-depth="1.2"
+       style="--x:-52px;--y:30%;--rot:7deg;--size:190px;--z:2;--anim:iconFloatF;--dur:10.5s;--delay:-2s;--exit-delay:.11s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
         <div class="f-icon-card">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z"/>
-            <path d="M12 2h3.5a3.5 3.5 0 0 1 0 7H12V2z"/>
-            <path d="M12 12.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 1 1-7 0z"/>
-            <path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 0 1-7 0z"/>
-            <path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z"/>
+            <path d="M5 17h14"/>
+            <path d="M6 17V9.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 18 9.5V17"/>
+            <path d="M9 8V6h6v2"/>
+            <circle cx="8" cy="18" r="1.5"/>
+            <circle cx="16" cy="18" r="1.5"/>
           </svg>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ============ ПРАВАЯ СТОРОНА ============ -->
-  <div class="f-icon" data-side="right" data-depth="1.1"
-       style="--x:-20px;--y:9%;--rot:12deg;--anim:iconFloatE;--dur:9.5s;--delay:-1.2s;--exit-delay:.04s;">
+  <!-- BOTTOM (в 1.5× меньше средней, впереди всех): Database -->
+  <div class="f-icon" data-side="right" data-depth="1.0"
+       style="--x:-18px;--y:46%;--rot:17deg;--size:130px;--z:3;--anim:iconFloatD;--dur:11s;--delay:-3.5s;--exit-delay:.18s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
         <div class="f-icon-card">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
-            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="f-icon" data-side="right" data-depth="0.9"
-       style="--x:-36px;--y:33%;--rot:9deg;--anim:iconFloatF;--dur:10.5s;--delay:-2s;--exit-delay:.11s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 0 1-8 0"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="f-icon hide-md" data-side="right" data-depth="1.3"
-       style="--x:-24px;--y:57%;--rot:15deg;--anim:iconFloatB;--dur:9s;--delay:-3.5s;--exit-delay:.18s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-            <polyline points="17 6 23 6 23 12"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="f-icon hide-md" data-side="right" data-depth="0.85"
-       style="--x:-32px;--y:81%;--rot:11deg;--anim:iconFloatC;--dur:11s;--delay:-1.5s;--exit-delay:.25s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
-            <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
-            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
-            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+            <ellipse cx="12" cy="5" rx="8" ry="3"/>
+            <path d="M20 12c0 1.66-3.58 3-8 3s-8-1.34-8-3"/>
+            <path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>
           </svg>
         </div>
       </div>
@@ -1407,10 +1385,8 @@ input[type="number"]{-moz-appearance:textfield}
   </div>
 </header>
 
-<!-- ============ MAIN ============ -->
 <main>
 
-  <!-- ========== HOME ========== -->
   <section class="page active" id="page-home" data-page="home">
     <div class="reveal">
       <div class="hero-badge"><span class="dot-pulse"></span> Свободные слоты на этот месяц</div>
@@ -1444,7 +1420,6 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
   </section>
 
-  <!-- ========== SERVICES ========== -->
   <section class="page" id="page-services" data-page="services">
     <div class="section-head">
       <div class="section-label reveal">Каталог решений</div>
@@ -1454,7 +1429,6 @@ input[type="number"]{-moz-appearance:textfield}
     <div class="catalog-grid" id="catalog-grid"></div>
   </section>
 
-  <!-- ========== PRICING ========== -->
   <section class="page" id="page-pricing" data-page="pricing">
     <div class="section-head">
       <div class="section-label reveal">Тарифы</div>
@@ -1464,7 +1438,6 @@ input[type="number"]{-moz-appearance:textfield}
     <div class="pricing-grid" id="pricing-grid"></div>
   </section>
 
-  <!-- ========== REVIEWS ========== -->
   <section class="page" id="page-reviews" data-page="reviews">
     <div class="section-head" style="text-align:left;margin-bottom:32px">
       <div class="section-label reveal">Отзывы клиентов</div>
@@ -1486,7 +1459,6 @@ input[type="number"]{-moz-appearance:textfield}
     <div id="reviews-content"></div>
   </section>
 
-  <!-- ========== ORDER ========== -->
   <section class="page" id="page-order" data-page="order">
     <div class="section-head">
       <div class="section-label reveal">Оставить заявку</div>
@@ -1516,7 +1488,6 @@ input[type="number"]{-moz-appearance:textfield}
             </select>
           </div>
 
-          <!-- ========= КАСТОМНЫЙ ВЫБОР БЮДЖЕТА ========= -->
           <div class="budget-picker">
             <div class="budget-picker-label">
               <svg viewBox="0 0 24 24"><path d="M8 4h6a4 4 0 0 1 0 8H8"/><path d="M8 4v16"/><path d="M4 12h11"/></svg>
@@ -1558,7 +1529,6 @@ input[type="number"]{-moz-appearance:textfield}
 
 </main>
 
-<!-- ============ BOTTOM NAV ============ -->
 <nav class="bottom-nav" id="bottom-nav">
   <button class="nav-item active" data-page="home">
     <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
@@ -1582,7 +1552,6 @@ input[type="number"]{-moz-appearance:textfield}
   </button>
 </nav>
 
-<!-- ============ AUTH MODAL ============ -->
 <div class="modal" id="auth-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('auth-modal')">✕</button>
@@ -1617,7 +1586,6 @@ input[type="number"]{-moz-appearance:textfield}
   </div>
 </div>
 
-<!-- ============ REVIEW MODAL ============ -->
 <div class="modal" id="review-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('review-modal')">✕</button>
@@ -1693,10 +1661,8 @@ const PRICING = [
    INIT
    ============================================================ */
 window.addEventListener('load', () => {
-  // Стартовое состояние: главная активна, иконки сбоку видны
   document.body.classList.add('home-page');
 
-  // Гарантированное завершение интро через 2200 мс
   setTimeout(() => {
     const intro = document.getElementById('intro');
     const flash = document.getElementById('flash');
@@ -1714,7 +1680,7 @@ window.addEventListener('load', () => {
     activateReveal(document.getElementById('page-home'));
   }, 2200);
 
-  // Страховка: принудительно убрать интро через 4с при любом сбое
+  // Страховка от зависания интро
   setTimeout(() => {
     const intro = document.getElementById('intro');
     if (intro && intro.style.display !== 'none') {
@@ -1755,7 +1721,6 @@ function go(page){
     return;
   }
   state.currentPage = page;
-  // Триггерит вылет/прилёт боковых иконок через CSS-класс на body
   document.body.classList.toggle('home-page', page === 'home');
   document.querySelectorAll('.nav-item').forEach(b => {
     b.classList.toggle('active', b.dataset.page === page);

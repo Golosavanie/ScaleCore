@@ -234,7 +234,6 @@ body:not(.home-page) .f-icon[data-side="right"]{
   will-change: transform;
 }
 
-/* 6 разных траекторий парения */
 @keyframes iconFloatA{
   0%,100%{transform:rotate(var(--rot,0deg)) translate(0,0)}
   25%{transform:rotate(calc(var(--rot,0deg) + 2deg)) translate(6px,-12px)}
@@ -351,7 +350,6 @@ body:not(.home-page) .f-icon[data-side="right"]{
   transform:scale(1.06);
 }
 
-/* Планшеты — уменьшаем до 55% от базового */
 @media (max-width:1279px){
   .f-icon-card{
     width: calc(var(--size, 160px) * 0.55);
@@ -450,20 +448,6 @@ header::before{
   box-shadow:0 0 24px rgba(255,255,255,.5);
 }
 .header-actions{display:flex;gap:10px;align-items:center}
-.user-chip{
-  padding:7px 14px 7px 7px;border-radius:24px;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-  font-size:12px;font-weight:700;letter-spacing:.3px;
-  display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .35s var(--ease);
-  max-width:220px;
-}
-.user-chip:hover{background:rgba(255,255,255,.14);transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.4)}
-.user-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.user-avatar{
-  width:28px;height:28px;border-radius:50%;
-  background:linear-gradient(135deg,#fff,#a89bff);color:#000;
-  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0;
-}
 .btn-header{padding:10px 20px;font-size:11px;letter-spacing:1.6px;border-radius:14px}
 
 /* ============================================================
@@ -907,6 +891,7 @@ input,textarea,select{
   transition:border-color .35s var(--ease), background .35s var(--ease), box-shadow .35s var(--ease), transform .35s var(--ease);
 }
 textarea{padding:18px;resize:vertical;min-height:120px;line-height:1.6}
+textarea{padding-left:50px !important}
 input::placeholder,textarea::placeholder{color:#666}
 input:focus,textarea:focus,select:focus{
   border-color:rgba(255,255,255,.7);background:rgba(10,10,12,.85);
@@ -1100,18 +1085,6 @@ input[type="number"]{-moz-appearance:textfield}
 .modal-close:hover{background:rgba(255,255,255,.18);transform:rotate(90deg) scale(1.05)}
 .modal-box h2{font-size:22px;font-weight:800;letter-spacing:-.6px;margin-bottom:6px}
 .modal-box .sub{font-size:13px;color:var(--muted);margin-bottom:24px}
-.tabs{
-  display:flex;gap:6px;padding:5px;border-radius:14px;
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-  margin-bottom:24px;
-}
-.tab{
-  flex:1;padding:11px;border-radius:10px;background:transparent;border:none;
-  color:var(--muted);font-size:12px;font-weight:800;letter-spacing:1.2px;
-  text-transform:uppercase;cursor:pointer;transition:all .35s var(--ease);
-}
-.tab.active{background:#fff;color:#000}
-.tab:not(.active):hover{color:#fff;background:rgba(255,255,255,.05)}
 .form-stack{display:flex;flex-direction:column;gap:12px}
 .form-stack .input-icon{width:16px;height:16px}
 .form-stack input{padding:15px 16px 15px 46px;font-size:13px}
@@ -1264,11 +1237,10 @@ input[type="number"]{-moz-appearance:textfield}
 
 <div id="toast-container"></div>
 
-<!-- ============ FLOATING SIDE ICONS (2x УВЕЛИЧЕНЫ) ============ -->
+<!-- ============ FLOATING SIDE ICONS ============ -->
 <div class="float-icons" id="float-icons" aria-hidden="true">
 
   <!-- ===================== ЛЕВЫЙ КЛАСТЕР ===================== -->
-  <!-- TOP (мелкая, сзади): Cloud — 220px -->
   <div class="f-icon" data-side="left" data-depth="0.85"
        style="--x:-55px;--y:8%;--rot:-14deg;--size:220px;--z:1;--anim:iconFloatA;--dur:9s;--delay:-1s;--exit-delay:0s;">
     <div class="f-icon-parallax">
@@ -1282,7 +1254,6 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
   </div>
 
-  <!-- MIDDLE (самая большая): Server rack — 380px -->
   <div class="f-icon" data-side="left" data-depth="1.2"
        style="--x:-110px;--y:18%;--rot:-7deg;--size:380px;--z:2;--anim:iconFloatB;--dur:11s;--delay:-2.5s;--exit-delay:.07s;">
     <div class="f-icon-parallax">
@@ -1299,7 +1270,6 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
   </div>
 
-  <!-- BOTTOM (в 1.5× меньше средней, впереди): Terminal — 260px -->
   <div class="f-icon" data-side="left" data-depth="1.0"
        style="--x:-42px;--y:50%;--rot:-20deg;--size:260px;--z:3;--anim:iconFloatC;--dur:10s;--delay:-3s;--exit-delay:.14s;">
     <div class="f-icon-parallax">
@@ -1316,7 +1286,6 @@ input[type="number"]{-moz-appearance:textfield}
   </div>
 
   <!-- ===================== ПРАВЫЙ КЛАСТЕР ===================== -->
-  <!-- TOP (мелкая, сзади): Code brackets — 220px -->
   <div class="f-icon" data-side="right" data-depth="0.85"
        style="--x:-55px;--y:9%;--rot:13deg;--size:220px;--z:1;--anim:iconFloatE;--dur:9.5s;--delay:-1.5s;--exit-delay:.04s;">
     <div class="f-icon-parallax">
@@ -1331,7 +1300,6 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
   </div>
 
-  <!-- MIDDLE (самая большая): Taxi — 380px -->
   <div class="f-icon" data-side="right" data-depth="1.2"
        style="--x:-110px;--y:19%;--rot:7deg;--size:380px;--z:2;--anim:iconFloatF;--dur:10.5s;--delay:-2s;--exit-delay:.11s;">
     <div class="f-icon-parallax">
@@ -1349,7 +1317,6 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
   </div>
 
-  <!-- BOTTOM (в 1.5× меньше средней, впереди): Database — 260px -->
   <div class="f-icon" data-side="right" data-depth="1.0"
        style="--x:-42px;--y:52%;--rot:17deg;--size:260px;--z:3;--anim:iconFloatD;--dur:11s;--delay:-3.5s;--exit-delay:.18s;">
     <div class="f-icon-parallax">
@@ -1371,9 +1338,6 @@ input[type="number"]{-moz-appearance:textfield}
   <div class="logo" onclick="go('home')">
     <div class="logo-mark">SC</div>
     <span>SCALECORE</span>
-  </div>
-  <div class="header-actions">
-    <div id="user-zone"></div>
   </div>
 </header>
 
@@ -1544,40 +1508,6 @@ input[type="number"]{-moz-appearance:textfield}
   </button>
 </nav>
 
-<div class="modal" id="auth-modal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('auth-modal')">✕</button>
-    <div class="tabs">
-      <button class="tab active" id="tab-login" onclick="switchAuthTab('login')">Вход</button>
-      <button class="tab" id="tab-register" onclick="switchAuthTab('register')">Регистрация</button>
-    </div>
-    <h2 id="auth-title">С возвращением!</h2>
-    <div class="sub" id="auth-sub">Войдите, чтобы оставлять отзывы</div>
-    <form id="auth-form" onsubmit="handleAuth(event)" autocomplete="off">
-      <div class="form-stack">
-        <div class="input-group" id="field-name" style="display:none">
-          <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <input type="text" name="name" placeholder="Ваше имя">
-        </div>
-        <div class="input-group">
-          <svg class="input-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <input type="email" name="email" placeholder="Email" required>
-        </div>
-        <div class="input-group">
-          <svg class="input-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <input type="password" name="password" placeholder="Пароль" required minlength="4">
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary" style="width:100%">
-        <span id="auth-btn-text">Войти</span>
-      </button>
-    </form>
-    <div class="modal-switch" id="auth-switch">
-      Нет аккаунта? <a onclick="switchAuthTab('register')">Зарегистрироваться</a>
-    </div>
-  </div>
-</div>
-
 <div class="modal" id="review-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('review-modal')">✕</button>
@@ -1592,6 +1522,10 @@ input[type="number"]{-moz-appearance:textfield}
         <span class="star" data-value="5">★</span>
       </div>
       <div class="form-stack">
+        <div class="input-group">
+          <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" name="review-name" placeholder="Ваше имя" required>
+        </div>
         <div class="input-group">
           <svg class="input-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
           <select name="service" required>
@@ -1615,15 +1549,12 @@ input[type="number"]{-moz-appearance:textfield}
 /* ============================================================
    STATE
    ============================================================ */
-const LS_USER = 'sc_user_v8';
 const LS_REVIEWS = 'sc_reviews_v8';
 const LS_ORDERS = 'sc_orders_v8';
 
 const state = {
-  user: JSON.parse(localStorage.getItem(LS_USER) || 'null'),
   reviews: JSON.parse(localStorage.getItem(LS_REVIEWS) || '[]'),
   currentPage: 'home',
-  authTab: 'login',
   newReviewRating: 0,
   budget: 25000
 };
@@ -1684,7 +1615,6 @@ window.addEventListener('load', () => {
   renderCatalog();
   renderPricing();
   renderReviews();
-  renderUserZone();
   initStarsInput();
   initBudgetPicker();
   initNav();
@@ -1873,92 +1803,6 @@ function initBudgetPicker(){
 }
 
 /* ============================================================
-   AUTH
-   ============================================================ */
-function renderUserZone(){
-  const zone = document.getElementById('user-zone');
-  if (state.user) {
-    const initials = (state.user.name || state.user.email).slice(0,1).toUpperCase();
-    zone.innerHTML = `
-      <div class="user-chip" onclick="logout()" title="Нажмите, чтобы выйти">
-        <div class="user-avatar">${initials}</div>
-        <span>${escapeHtml(state.user.name || state.user.email.split('@')[0])}</span>
-      </div>
-    `;
-  } else {
-    zone.innerHTML = `<button class="btn btn-primary btn-header" onclick="openAuthModal()">Войти</button>`;
-  }
-}
-
-function openAuthModal(){
-  switchAuthTab('login');
-  openModal('auth-modal');
-}
-
-function openModal(id){
-  const m = document.getElementById(id);
-  m.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal(id){
-  const m = document.getElementById(id);
-  m.classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-function switchAuthTab(tab){
-  state.authTab = tab;
-  const isLogin = tab === 'login';
-  document.getElementById('tab-login').classList.toggle('active', isLogin);
-  document.getElementById('tab-register').classList.toggle('active', !isLogin);
-  document.getElementById('field-name').style.display = isLogin ? 'none' : 'block';
-  document.getElementById('auth-title').innerText = isLogin ? 'С возвращением!' : 'Создать аккаунт';
-  document.getElementById('auth-sub').innerText = isLogin ? 'Войдите, чтобы оставлять отзывы' : 'Зарегистрируйтесь — это займёт 10 секунд';
-  document.getElementById('auth-btn-text').innerText = isLogin ? 'Войти' : 'Зарегистрироваться';
-  const sw = document.getElementById('auth-switch');
-  sw.innerHTML = isLogin
-    ? 'Нет аккаунта? <a onclick="switchAuthTab(\'register\')">Зарегистрироваться</a>'
-    : 'Уже есть аккаунт? <a onclick="switchAuthTab(\'login\')">Войти</a>';
-}
-
-function handleAuth(e){
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const name = (fd.get('name') || '').trim();
-  const email = (fd.get('email') || '').trim().toLowerCase();
-  const password = fd.get('password');
-
-  if (state.authTab === 'register') {
-    if (!name || name.length < 2) return toast('Введите корректное имя', false);
-    const users = JSON.parse(localStorage.getItem('sc_users') || '{}');
-    if (users[email]) return toast('Пользователь уже существует', false);
-    users[email] = { name, email, password };
-    localStorage.setItem('sc_users', JSON.stringify(users));
-    state.user = { name, email };
-    localStorage.setItem(LS_USER, JSON.stringify(state.user));
-    toast('Регистрация успешна!', true);
-  } else {
-    const users = JSON.parse(localStorage.getItem('sc_users') || '{}');
-    const u = users[email];
-    if (!u || u.password !== password) return toast('Неверный email или пароль', false);
-    state.user = { name: u.name, email: u.email };
-    localStorage.setItem(LS_USER, JSON.stringify(state.user));
-    toast('Вы вошли', true);
-  }
-  closeModal('auth-modal');
-  renderUserZone();
-  e.target.reset();
-}
-
-function logout(){
-  state.user = null;
-  localStorage.removeItem(LS_USER);
-  renderUserZone();
-  toast('Вы вышли из аккаунта', true);
-}
-
-/* ============================================================
    REVIEWS
    ============================================================ */
 function renderReviews(){
@@ -2028,11 +1872,6 @@ function escapeHtml(s){
 }
 
 function openReviewModal(){
-  if (!state.user) {
-    toast('Войдите, чтобы оставить отзыв', false);
-    openAuthModal();
-    return;
-  }
   state.newReviewRating = 0;
   document.querySelectorAll('#stars-input .star').forEach(s => s.classList.remove('active'));
   document.getElementById('review-form').reset();
@@ -2066,7 +1905,7 @@ function submitReview(e){
   if (!state.newReviewRating) return toast('Поставьте оценку', false);
   const fd = new FormData(e.target);
   const review = {
-    name: state.user.name || state.user.email.split('@')[0],
+    name: (fd.get('review-name') || '').trim() || 'Аноним',
     rating: state.newReviewRating,
     service: fd.get('service'),
     text: fd.get('text').trim(),
@@ -2084,7 +1923,7 @@ function submitReview(e){
 }
 
 /* ============================================================
-   ORDER
+   ORDER + BARK NOTIFICATION
    ============================================================ */
 function submitOrder(e){
   e.preventDefault();
@@ -2095,12 +1934,15 @@ function submitOrder(e){
     type: fd.get('type'),
     budget: fd.get('budget'),
     description: fd.get('description'),
-    date: Date.now(),
-    user: state.user ? state.user.email : null
+    date: Date.now()
   };
   const orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
   orders.push(order);
   localStorage.setItem(LS_ORDERS, JSON.stringify(orders));
+
+  // Отправка уведомления в Bark
+  sendBarkNotification(order);
+
   e.target.reset();
 
   const def = document.querySelector('.budget-chip[data-value="25000"]');
@@ -2111,6 +1953,44 @@ function submitOrder(e){
   if (customInp) customInp.value = 25000;
 
   toast('Заявка отправлена! Свяжемся в течение 30 минут', true);
+}
+
+/**
+ * Отправляет уведомление в Bark API.
+ * @param {Object} order - объект заказа
+ */
+function sendBarkNotification(order) {
+  const BARK_URL = 'https://api.day.app/2mfG6468JsmXaVLaLETob';
+  const GROUP = 'scalecore_order';
+  const TTL = 600;
+
+  const typeMap = {
+    landing: 'Лендинг',
+    corporate: 'Корпоративный сайт',
+    shop: 'Интернет-магазин',
+    webapp: 'Веб-приложение',
+    custom: 'Другое / не знаю'
+  };
+
+  const dateStr = new Date(order.date).toLocaleString('ru-RU', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+
+  const title = '🔥 Новая заявка ScaleCore';
+  const body = [
+    `👤 Имя: ${order.name || '—'}`,
+    `📞 Контакт: ${order.phone || '—'}`,
+    `📦 Тип проекта: ${typeMap[order.type] || order.type || '—'}`,
+    `💰 Бюджет: ${Number(order.budget).toLocaleString('ru-RU')} ₽`,
+    `🕐 Время: ${dateStr}`,
+    `📝 Описание: ${order.description || '—'}`
+  ].join('\n');
+
+  const url = `${BARK_URL}/${encodeURIComponent(title)}/${encodeURIComponent(body)}?group=${GROUP}&ttl=${TTL}&level=timeSensitive&sound=alarm`;
+
+  fetch(url, { method: 'GET', mode: 'no-cors' })
+    .catch(err => console.warn('Bark notification failed:', err));
 }
 
 /* ============================================================

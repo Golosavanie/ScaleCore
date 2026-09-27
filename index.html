@@ -448,7 +448,6 @@ header::before{
   box-shadow:0 0 24px rgba(255,255,255,.5);
 }
 .header-actions{display:flex;gap:10px;align-items:center}
-.btn-header{padding:10px 20px;font-size:11px;letter-spacing:1.6px;border-radius:14px}
 
 /* ============================================================
    BUTTONS
@@ -1089,8 +1088,6 @@ input[type="number"]{-moz-appearance:textfield}
 .form-stack .input-icon{width:16px;height:16px}
 .form-stack input{padding:15px 16px 15px 46px;font-size:13px}
 .modal-box .btn{margin-top:6px}
-.modal-switch{text-align:center;font-size:12px;color:var(--muted);margin-top:16px}
-.modal-switch a{color:#fff;text-decoration:underline;cursor:pointer;font-weight:700}
 
 .stars-input{display:flex;justify-content:center;gap:8px;margin:16px 0 20px}
 .star{font-size:40px;cursor:pointer;color:rgba(255,255,255,.15);transition:all .25s var(--ease);line-height:1;user-select:none}
@@ -1133,9 +1130,6 @@ input[type="number"]{-moz-appearance:textfield}
   header{padding:14px 16px}
   .logo{font-size:12px;letter-spacing:3px}
   .logo-mark{width:30px;height:30px;font-size:12px}
-  .user-chip span{display:none}
-  .user-chip{padding:7px}
-  .btn-header{padding:9px 16px;font-size:10.5px;letter-spacing:1.2px}
   .hero-stats{gap:24px;margin-top:48px;padding:22px 14px}
   .stat{min-width:60px}
   .stat b{font-size:26px}
@@ -1547,20 +1541,25 @@ input[type="number"]{-moz-appearance:textfield}
 
 <script>
 /* ============================================================
+   CONFIG
+   Если фронт обслуживается тем же сервером (Railway) — оставь пусто.
+   Если фронт лежит отдельно (GitHub Pages) — укажи URL бэкенда, например:
+   const API_BASE = 'https://scalecore.up.railway.app';
+   ============================================================ */
+const API_BASE = '';
+
+/* ============================================================
    STATE
    ============================================================ */
-const LS_REVIEWS = 'sc_reviews_v8';
-const LS_ORDERS = 'sc_orders_v8';
-
 const state = {
-  reviews: JSON.parse(localStorage.getItem(LS_REVIEWS) || '[]'),
+  reviews: [],
   currentPage: 'home',
   newReviewRating: 0,
   budget: 25000
 };
 
 /* ============================================================
-   DATA
+   DATA (каталог и тарифы на фронте)
    ============================================================ */
 const CATALOG = [
   { id:'restaurant', name:'Рестораны и кафе', desc:'Меню, бронь столов, доставка, интеграция с iiko и R-Keeper.', price:'от 25 000 ₽', icon:'<path d="M3 2v7c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V2"/><path d="M5 2v20"/><path d="M15 2c-1.5 1-3 3-3 5s1.5 4 3 5v10"/>' },
@@ -1614,7 +1613,7 @@ window.addEventListener('load', () => {
 
   renderCatalog();
   renderPricing();
-  renderReviews();
+  loadReviews();
   initStarsInput();
   initBudgetPicker();
   initNav();
@@ -1803,8 +1802,20 @@ function initBudgetPicker(){
 }
 
 /* ============================================================
-   REVIEWS
+   REVIEWS — загрузка с сервера
    ============================================================ */
+async function loadReviews(){
+  try {
+    const r = await fetch(API_BASE + '/api/reviews');
+    const j = await r.json();
+    state.reviews = Array.isArray(j.reviews) ? j.reviews : [];
+  } catch (e) {
+    console.warn('Не удалось загрузить отзывы:', e.message);
+    state.reviews = [];
+  }
+  renderReviews();
+}
+
 function renderReviews(){
   const content = document.getElementById('reviews-content');
   const count = state.reviews.length;
@@ -1868,7 +1879,7 @@ function formatDate(ts){
 }
 
 function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function openReviewModal(){
@@ -1900,102 +1911,102 @@ function initStarsInput(){
   });
 }
 
-function submitReview(e){
+async function submitReview(e){
   e.preventDefault();
   if (!state.newReviewRating) return toast('Поставьте оценку', false);
   const fd = new FormData(e.target);
-  const review = {
-    name: (fd.get('review-name') || '').trim() || 'Аноним',
+  const body = {
+    name: (fd.get('review-name') || '').trim(),
     rating: state.newReviewRating,
     service: fd.get('service'),
-    text: fd.get('text').trim(),
-    date: Date.now()
+    text: (fd.get('text') || '').trim()
   };
-  if (!review.text || review.text.length < 5) return toast('Напишите отзыв', false);
-  state.reviews.unshift(review);
-  localStorage.setItem(LS_REVIEWS, JSON.stringify(state.reviews));
-  renderReviews();
-  closeModal('review-modal');
-  toast('Спасибо за отзыв!', true);
-  e.target.reset();
-  state.newReviewRating = 0;
-  go('reviews');
+  if (!body.text || body.text.length < 5) return toast('Напишите отзыв', false);
+
+  const btn = e.target.querySelector('button[type="submit"]');
+  const old = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = 'Отправка...';
+
+  try {
+    const r = await fetch(API_BASE + '/api/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Ошибка');
+    closeModal('review-modal');
+    toast('Спасибо за отзыв!', true);
+    e.target.reset();
+    state.newReviewRating = 0;
+    await loadReviews();
+    go('reviews');
+  } catch (err) {
+    toast('Не удалось отправить отзыв', false);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = old;
+  }
 }
 
 /* ============================================================
-   ORDER + BARK NOTIFICATION
+   ORDER — отправка на сервер (сервер также шлёт Bark)
    ============================================================ */
-function submitOrder(e){
+async function submitOrder(e){
   e.preventDefault();
   const fd = new FormData(e.target);
-  const order = {
-    name: fd.get('name'),
-    phone: fd.get('phone'),
+  const body = {
+    name: (fd.get('name') || '').trim(),
+    phone: (fd.get('phone') || '').trim(),
     type: fd.get('type'),
-    budget: fd.get('budget'),
-    description: fd.get('description'),
-    date: Date.now()
-  };
-  const orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
-  orders.push(order);
-  localStorage.setItem(LS_ORDERS, JSON.stringify(orders));
-
-  // Отправка уведомления в Bark
-  sendBarkNotification(order);
-
-  e.target.reset();
-
-  const def = document.querySelector('.budget-chip[data-value="25000"]');
-  if (def) def.click();
-  const customWrap = document.getElementById('budget-custom-wrap');
-  if (customWrap) customWrap.classList.add('hidden');
-  const customInp = document.getElementById('budget-input');
-  if (customInp) customInp.value = 25000;
-
-  toast('Заявка отправлена! Свяжемся в течение 30 минут', true);
-}
-
-/**
- * Отправляет уведомление в Bark API.
- * @param {Object} order - объект заказа
- */
-function sendBarkNotification(order) {
-  const BARK_URL = 'https://api.day.app/2mfG6468JsmXaVLaLETob';
-  const GROUP = 'scalecore_order';
-  const TTL = 600;
-
-  const typeMap = {
-    landing: 'Лендинг',
-    corporate: 'Корпоративный сайт',
-    shop: 'Интернет-магазин',
-    webapp: 'Веб-приложение',
-    custom: 'Другое / не знаю'
+    budget: Number(fd.get('budget')) || 0,
+    description: (fd.get('description') || '').trim()
   };
 
-  const dateStr = new Date(order.date).toLocaleString('ru-RU', {
-    day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
+  const btn = e.target.querySelector('button[type="submit"]');
+  const old = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = 'Отправка...';
 
-  const title = '🔥 Новая заявка ScaleCore';
-  const body = [
-    `👤 Имя: ${order.name || '—'}`,
-    `📞 Контакт: ${order.phone || '—'}`,
-    `📦 Тип проекта: ${typeMap[order.type] || order.type || '—'}`,
-    `💰 Бюджет: ${Number(order.budget).toLocaleString('ru-RU')} ₽`,
-    `🕐 Время: ${dateStr}`,
-    `📝 Описание: ${order.description || '—'}`
-  ].join('\n');
+  try {
+    const r = await fetch(API_BASE + '/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Ошибка');
 
-  const url = `${BARK_URL}/${encodeURIComponent(title)}/${encodeURIComponent(body)}?group=${GROUP}&ttl=${TTL}&level=timeSensitive&sound=alarm`;
+    e.target.reset();
+    const def = document.querySelector('.budget-chip[data-value="25000"]');
+    if (def) def.click();
+    const customWrap = document.getElementById('budget-custom-wrap');
+    if (customWrap) customWrap.classList.add('hidden');
+    const customInp = document.getElementById('budget-input');
+    if (customInp) customInp.value = 25000;
 
-  fetch(url, { method: 'GET', mode: 'no-cors' })
-    .catch(err => console.warn('Bark notification failed:', err));
+    toast('Заявка отправлена! Свяжемся в течение 30 минут', true);
+  } catch (err) {
+    toast('Ошибка отправки. Попробуйте позже', false);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = old;
+  }
 }
 
 /* ============================================================
-   TOAST
+   MODAL / TOAST
    ============================================================ */
+function openModal(id){
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 function toast(msg, ok = true){
   const c = document.getElementById('toast-container');
   const t = document.createElement('div');
@@ -2014,7 +2025,7 @@ function toast(msg, ok = true){
 }
 
 /* ============================================================
-   CARD CURSOR GLOW
+   EFFECTS
    ============================================================ */
 function initCardCursor(){
   document.addEventListener('mousemove', e => {
@@ -2026,9 +2037,6 @@ function initCardCursor(){
   });
 }
 
-/* ============================================================
-   SCROLL PROGRESS
-   ============================================================ */
 function initScrollProgress(){
   const bar = document.getElementById('scroll-bar');
   if (!bar) return;
@@ -2040,9 +2048,6 @@ function initScrollProgress(){
   }, { passive: true });
 }
 
-/* ============================================================
-   CURSOR GLOW FOLLOWER
-   ============================================================ */
 function initCursorGlow(){
   const glow = document.getElementById('cursor-glow');
   if (!glow || matchMedia('(max-width:900px)').matches) return;
@@ -2056,9 +2061,6 @@ function initCursorGlow(){
   })();
 }
 
-/* ============================================================
-   FLOAT SIDE ICONS — PARALLAX
-   ============================================================ */
 function initFloatIcons(){
   const icons = document.querySelectorAll('.f-icon');
   if (!icons.length) return;
@@ -2085,9 +2087,6 @@ function initFloatIcons(){
   })();
 }
 
-/* ============================================================
-   MAGNETIC BUTTONS
-   ============================================================ */
 function initMagneticButtons(){
   if (matchMedia('(pointer: coarse)').matches) return;
   document.querySelectorAll('.btn').forEach(btn => {
@@ -2103,9 +2102,6 @@ function initMagneticButtons(){
   });
 }
 
-/* ============================================================
-   3D TILT ON CARDS
-   ============================================================ */
 function initTilt(){
   if (matchMedia('(pointer: coarse)').matches) return;
   const cards = document.querySelectorAll('.cat-card, .price-card, .review-card, .step');
@@ -2124,9 +2120,6 @@ function initTilt(){
   });
 }
 
-/* ============================================================
-   COUNTERS
-   ============================================================ */
 function initCounters(){
   const stats = document.querySelectorAll('.hero-stats .stat b');
   stats.forEach(el => {

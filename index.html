@@ -1737,7 +1737,9 @@ const CATALOG = [
   { id:'medical', name:'Клиники и медицина', desc:'Запись к врачу, каталог услуг, личный кабинет пациента.', price:'от 40 000 ₽', icon:'<path d="M12 2v20"/><path d="M2 12h20"/><circle cx="12" cy="12" r="10"/>' },
   { id:'edu', name:'Образование и курсы', desc:'Каталог курсов, расписание, личный кабинет студента.', price:'от 45 000 ₽', icon:'<path d="M22 10L12 4 2 10l10 6 10-6z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>' },
   { id:'fitness', name:'Фитнес и спорт', desc:'Расписание, тренеры, абонементы, онлайн-запись.', price:'от 25 000 ₽', icon:'<path d="M6 4v16"/><path d="M18 4v16"/><path d="M2 8v8"/><path d="M22 8v8"/><path d="M6 12h12"/>' },
-  { id:'beauty', name:'Красота и услуги', desc:'Онлайн-запись, прайс-лист, отзывы, галерея работ.', price:'от 20 000 ₽', icon:'<path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.7 6.5 19.5l1-6.3L3 8.9 9 8z"/>' }
+  { id:'beauty', name:'Красота и услуги', desc:'Онлайн-запись, прайс-лист, отзывы, галерея работ.', price:'от 20 000 ₽', icon:'<path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.7 6.5 19.5l1-6.3L3 8.9 9 8z"/>' },
+  { id:'websites', name:'Сайты', desc:'Лендинги и многостраничники, которые продают: структура, дизайн, тексты.', price:'от 40 000 ₽', icon:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M2 8h20"/>' },
+  { id:'sales-system', name:'Система продаж', desc:'Связка Авито и сайта в единый поток заявок. Каждая площадка работает на результат.', price:'от 80 000 ₽', icon:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/>' }
 ];
 
 /* ============================================================
@@ -1773,26 +1775,6 @@ const EXTENDED_SERVICES = [
     price: 'от 30 000 ₽',
     duration: '3–5 дней',
     icon: '<path d="M3 3h18l-2 12H5z"/><path d="M8 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M17 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M8 15v4"/><path d="M17 15v4"/>'
-  },
-  {
-    id: 'websites',
-    title: 'Сайты',
-    question: 'Клиент ищет в интернете — тебя там нет? Или сайт есть, но не продаёт? Собираю сайт, который отвечает на вопросы клиента и ведёт к заявке.',
-    includes: 'Структура, дизайн, тексты, надёжность.',
-    result: 'Сайт, который продаёт, а не просто висит.',
-    price: 'Лендинг — от 40 000 ₽<br>Многостраничник — от 80 000 ₽',
-    duration: 'Лендинг — 2–4 дня<br>Многостраничник — 6–12 дней',
-    icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M2 8h20"/>'
-  },
-  {
-    id: 'sales-system',
-    title: 'Система продаж',
-    question: 'Авито приводит. Сайт закрывает. Вместе — поток заявок. Настраиваю связку: объявления, сайт, чтобы каждая площадка работала на результат.',
-    includes: 'Авито, сайт, связка.',
-    result: 'Система, где каждая площадка работает на заявки.',
-    price: 'от 80 000 ₽',
-    duration: 'Срок от 2 недель',
-    icon: '<circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/>'
   }
 ];
 
@@ -1912,7 +1894,7 @@ function orderService(id){
   go('order');
   setTimeout(() => {
     const sel = document.getElementById('order-type');
-    const map = { shop:'shop', landing:'landing', build:'corporate', restaurant:'corporate', medical:'corporate', edu:'corporate', fitness:'corporate', beauty:'corporate', taxi:'custom' };
+    const map = { shop:'shop', landing:'landing', build:'corporate', restaurant:'corporate', medical:'corporate', edu:'corporate', fitness:'corporate', beauty:'corporate', taxi:'custom', websites:'landing', 'sales-system':'custom' };
     sel.value = map[id] || 'custom';
     const ta = document.querySelector('#order-form textarea[name="description"]');
     if (ta) ta.value = `Интересует разработка: ${c.name}. ${c.desc}`;
@@ -1963,7 +1945,7 @@ function orderExtendedService(id){
     const sel = document.getElementById('order-type');
     if (sel) {
       // Мапим на существующие типы или custom
-      const map = { 'audit-listing':'custom', 'audit-shop':'custom', 'shop-turnkey':'shop', 'websites':'landing', 'sales-system':'custom' };
+      const map = { 'audit-listing':'custom', 'audit-shop':'custom', 'shop-turnkey':'shop' };
       sel.value = map[id] || 'custom';
       sel.dispatchEvent(new Event('change'));
     }

@@ -19,6 +19,11 @@
 --ease:cubic-bezier(.16,1,.3,1);
 --ease-spring:cubic-bezier(.34,1.4,.5,1);
 }
+@property --angle{
+  syntax:'<angle>';
+  initial-value:0deg;
+  inherits:false;
+}
 *{box-sizing:border-box;margin:0;padding:0;font-family:var(--font);-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.5;min-height:100vh;position:relative}
@@ -86,6 +91,24 @@ body:hover .cursor-glow{opacity:1}
   33%{transform:translate(2%,-1.5%) scale(1.05)}
   66%{transform:translate(-2%,2%) scale(1.02)}
   100%{transform:translate(-1%,1%) scale(1.06)}
+}
+
+.bg-aurora{
+  position:absolute;inset:-20%;
+  background:
+    radial-gradient(ellipse 60% 30% at 30% 40%, rgba(100,180,255,.16), transparent 60%),
+    radial-gradient(ellipse 50% 25% at 70% 60%, rgba(180,100,255,.13), transparent 60%),
+    radial-gradient(ellipse 40% 20% at 50% 30%, rgba(80,220,200,.10), transparent 60%);
+  filter:blur(70px);
+  animation:auroraShift 32s ease-in-out infinite alternate;
+  mix-blend-mode:screen;
+  opacity:.75;
+  will-change:transform;
+}
+@keyframes auroraShift{
+  0%{transform:translate(0,0) rotate(0deg) scale(1)}
+  50%{transform:translate(2%,-1.5%) rotate(2deg) scale(1.06)}
+  100%{transform:translate(-2%,2%) rotate(-2deg) scale(1.02)}
 }
 
 .bg-conic{
@@ -189,36 +212,16 @@ body:hover .cursor-glow{opacity:1}
 }
 @keyframes twinkle{0%{opacity:.35}50%{opacity:.75}100%{opacity:.5}}
 
-/* Новые частицы */
-.bg-particles{
-  position:absolute;inset:0;pointer-events:none;overflow:hidden;
-}
-.bg-particle{
-  position:absolute;
-  width:2px;height:2px;border-radius:50%;
-  background:rgba(255,255,255,.7);
-  box-shadow:0 0 6px rgba(255,255,255,.9), 0 0 14px rgba(160,150,255,.6);
-  animation:particleRise linear infinite;
-  opacity:0;
-}
-@keyframes particleRise{
-  0%{opacity:0; transform:translateY(0) scale(.5)}
-  15%{opacity:.9}
-  85%{opacity:.7}
-  100%{opacity:0; transform:translateY(-120vh) scale(1.4)}
-}
-
 @media (prefers-reduced-motion: reduce){
-  .bg-flow,.bg-conic,.bg-topglow,.bg-orb,.bg-grid,.bg-stars,.bg-particle{animation:none}
+  .bg-flow,.bg-conic,.bg-topglow,.bg-orb,.bg-grid,.bg-stars,.bg-aurora{animation:none}
 }
 
 /* ============================================================
-   FLOATING SIDE — 3D CUBES
+   FLOATING 3D CUBES
    ============================================================ */
 .float-icons{
   position:fixed;inset:0;z-index:1;pointer-events:none;
   display:none;
-  perspective: 1800px;
 }
 @media (min-width:1024px){
   .float-icons{display:block}
@@ -246,438 +249,422 @@ body:not(.home-page) .f-icon[data-side="right"]{
   transform: translate(220%, 40px) scale(.55);
 }
 
-.f-icon-parallax{ will-change: transform; transform-style: preserve-3d }
+.f-icon-parallax{ will-change: transform }
 
 .f-icon-float{
   animation: var(--anim, iconFloatA) var(--dur, 9s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
   will-change: transform;
-  transform-style: preserve-3d;
 }
 
-/* ============= 3D CUBE ============= */
-.f-cube-scene{
-  --csize: var(--size, 160px);
-  width: var(--csize);
-  height: var(--csize);
-  transform-style: preserve-3d;
-  perspective: 1200px;
-  filter:
-    drop-shadow(0 30px 55px rgba(0,0,0,.65))
-    drop-shadow(0 0 45px rgba(140,130,255,.20));
-  transition: filter .6s var(--ease), transform .6s var(--ease-spring);
+@keyframes iconFloatA{
+  0%,100%{transform:rotate(var(--rot,0deg)) translate(0,0)}
+  25%{transform:rotate(calc(var(--rot,0deg) + 2deg)) translate(6px,-12px)}
+  50%{transform:rotate(var(--rot,0deg)) translate(-4px,-18px)}
+  75%{transform:rotate(calc(var(--rot,0deg) - 2deg)) translate(8px,-8px)}
 }
-.f-cube{
+@keyframes iconFloatB{
+  0%,100%{transform:rotate(var(--rot,0deg)) translate(0,0) scale(1)}
+  33%{transform:rotate(calc(var(--rot,0deg) + 3deg)) translate(-10px,-16px) scale(1.04)}
+  66%{transform:rotate(calc(var(--rot,0deg) - 1.5deg)) translate(6px,-6px) scale(.98)}
+}
+@keyframes iconFloatC{
+  0%,100%{transform:rotate(var(--rot,0deg)) translate(0,0)}
+  20%{transform:rotate(calc(var(--rot,0deg) - 3deg)) translate(4px,-6px)}
+  50%{transform:rotate(calc(var(--rot,0deg) + 1.5deg)) translate(-8px,-16px)}
+  80%{transform:rotate(calc(var(--rot,0deg) - 2deg)) translate(5px,-10px)}
+}
+@keyframes iconFloatD{
+  0%,100%{transform:rotate(var(--rot,0deg)) translate(0,0)}
+  40%{transform:rotate(calc(var(--rot,0deg) + 4deg)) translate(12px,-10px)}
+  75%{transform:rotate(calc(var(--rot,0deg) - 2deg)) translate(-6px,-20px)}
+}
+@keyframes iconFloatE{
+  0%,100%{transform:rotate(var(--rot,0deg)) translate(0,0) scale(1)}
+  25%{transform:rotate(calc(var(--rot,0deg) - 2deg)) translate(-6px,-14px) scale(1.03)}
+  60%{transform:rotate(calc(var(--rot,0deg) + 3deg)) translate(8px,-4px) scale(.97)}
+}
+@keyframes iconFloatF{
+  0%,100%{transform:rotate(var(--rot,0deg)) translate(0,0)}
+  30%{transform:rotate(calc(var(--rot,0deg) + 3deg)) translate(-8px,-18px)}
+  65%{transform:rotate(calc(var(--rot,0deg) - 2deg)) translate(10px,-6px)}
+}
+
+/* ---- 3D CUBE ---- */
+.cube-scene{
+  width: var(--size, 140px);
+  height: var(--size, 140px);
+  perspective: calc(var(--size, 140px) * 5);
   position: relative;
-  width: 100%;
-  height: 100%;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform .6s var(--ease-spring), filter .5s;
+  filter: drop-shadow(0 24px 45px rgba(0,0,0,.55)) drop-shadow(0 0 30px rgba(140,130,255,.14));
+}
+.cube-scene:hover{
+  transform: scale(1.08);
+  filter: drop-shadow(0 30px 60px rgba(0,0,0,.72)) drop-shadow(0 0 60px rgba(160,150,255,.55));
+}
+
+.cube{
+  position:absolute;
+  inset:0;
   transform-style: preserve-3d;
-  animation: cubeSpin var(--spin, 22s) linear infinite;
-  animation-delay: var(--spin-delay, 0s);
+  animation: cubeSpin var(--spin-dur, 24s) linear infinite;
   will-change: transform;
 }
 @keyframes cubeSpin{
-  0%   { transform: rotateX(-18deg) rotateY(0deg); }
-  100% { transform: rotateX(-18deg) rotateY(360deg); }
+  0%   { transform: rotateX(-18deg) rotateY(0deg)   rotateZ(0deg); }
+  100% { transform: rotateX(-18deg) rotateY(360deg) rotateZ(360deg); }
 }
 
-.f-cube-face{
+.cube-face{
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: calc(var(--csize) * 0.12);
-  background:
-    linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.02) 60%, rgba(160,150,255,.06));
-  border: 1px solid rgba(255,255,255,.20);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(var(--size, 140px) * 0.14);
+  background: linear-gradient(145deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.02) 100%);
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.28),
-    inset 0 -1px 0 rgba(0,0,0,.35),
-    inset 0 0 40px rgba(255,255,255,.06),
-    0 0 20px rgba(160,150,255,.10);
+    inset 0 0 60px rgba(160,150,255,.06),
+    inset 0 1px 0 rgba(255,255,255,.15);
   overflow: hidden;
-  backface-visibility: visible;
-  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: border-color .5s, box-shadow .5s;
 }
 
-.f-cube-face::before{
-  content:'';position:absolute;inset:0;
-  background: radial-gradient(circle at 30% 22%, rgba(255,255,255,.22), transparent 62%);
-  opacity:.85;pointer-events:none;
+.cube-scene:hover .cube-face{
+  border-color: rgba(255,255,255,.45);
+  box-shadow:
+    inset 0 0 60px rgba(200,180,255,.22),
+    0 0 30px rgba(160,150,255,.4);
 }
-.f-cube-face::after{
-  content:'';position:absolute;inset:0;
+
+.cube-face::before{
+  content:'';
+  position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.28), transparent 60%);
+  opacity:.55;
+  pointer-events:none;
+  transition: opacity .5s;
+}
+.cube-scene:hover .cube-face::before{ opacity: 1; }
+
+.cube-face::after{
+  content:'';
+  position:absolute;inset:0;border-radius:inherit;
   background:
-    linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);
-  background-size: 250% 100%;
-  background-position: 200% 0;
-  animation: faceShine 6s ease-in-out infinite;
+    linear-gradient(135deg, rgba(255,255,255,.22) 0%, transparent 35%),
+    linear-gradient(315deg, rgba(160,150,255,.18) 0%, transparent 35%);
   pointer-events:none;
   mix-blend-mode: overlay;
 }
-@keyframes faceShine{
-  0%,100%{background-position:200% 0}
-  50%{background-position:-100% 0}
-}
 
-.f-cube-face svg{
-  width: 42%;
-  height: 42%;
+.cube-face svg{
+  width: calc(var(--size, 140px) * 0.40);
+  height: calc(var(--size, 140px) * 0.40);
   color:#fff;
-  opacity:.95;
-  position:relative;z-index:1;
-  filter: drop-shadow(0 0 10px rgba(255,255,255,.55)) drop-shadow(0 0 22px rgba(160,150,255,.35));
-  transition: opacity .4s, filter .4s, transform .5s var(--ease-spring);
+  opacity:.9;
+  position:relative;
+  z-index:2;
+  filter: drop-shadow(0 0 10px rgba(180,170,255,.5));
+  transition: opacity .5s, filter .5s, transform .6s var(--ease-spring);
 }
-
-.f-cube-face.front  { transform: translateZ(calc(var(--csize) / 2)); }
-.f-cube-face.back   { transform: rotateY(180deg) translateZ(calc(var(--csize) / 2)); }
-.f-cube-face.right  { transform: rotateY(90deg) translateZ(calc(var(--csize) / 2)); }
-.f-cube-face.left   { transform: rotateY(-90deg) translateZ(calc(var(--csize) / 2)); }
-.f-cube-face.top    { transform: rotateX(90deg) translateZ(calc(var(--csize) / 2)); }
-.f-cube-face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--csize) / 2)); }
-
-/* Тонкая полоска-кант по рёбрам куба */
-.f-cube::before, .f-cube::after{
-  content:'';position:absolute;inset:0;border-radius: inherit;
-  pointer-events:none;
-}
-.f-cube::before{
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.05),
-    inset 0 0 60px rgba(160,150,255,.10);
-  border-radius: calc(var(--csize) * 0.12);
-  transform: translateZ(calc(var(--csize) * -0.01));
-}
-
-/* Hover состояние — красиво подсвечиваем */
-.f-icon:hover .f-cube-scene{
-  filter:
-    drop-shadow(0 40px 80px rgba(0,0,0,.8))
-    drop-shadow(0 0 90px rgba(180,170,255,.55));
-}
-.f-icon:hover .f-cube-face{
-  border-color: rgba(255,255,255,.42);
-  background:
-    linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.05) 60%, rgba(160,150,255,.12));
-}
-.f-icon:hover .f-cube-face svg{
+.cube-scene:hover .cube-face svg{
   opacity:1;
-  transform: scale(1.10);
-  filter: drop-shadow(0 0 16px rgba(255,255,255,.95)) drop-shadow(0 0 40px rgba(160,150,255,.75));
+  filter: drop-shadow(0 0 20px rgba(255,255,255,.9));
+  transform: scale(1.1);
 }
 
-/* Меньше размер на средних экранах */
+.cube-face.front  { transform: translateZ(calc(var(--size, 140px) / 2)); }
+.cube-face.back   { transform: rotateY(180deg) translateZ(calc(var(--size, 140px) / 2)); }
+.cube-face.right  { transform: rotateY(90deg)  translateZ(calc(var(--size, 140px) / 2)); }
+.cube-face.left   { transform: rotateY(-90deg) translateZ(calc(var(--size, 140px) / 2)); }
+.cube-face.top    { transform: rotateX(90deg)  translateZ(calc(var(--size, 140px) / 2)); }
+.cube-face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--size, 140px) / 2)); }
+
+.f-icon[data-side="left"] .cube-scene{
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.35) 18%, #000 55%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.35) 18%, #000 55%);
+}
+.f-icon[data-side="right"] .cube-scene{
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,.35) 18%, #000 55%);
+  mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,.35) 18%, #000 55%);
+}
+
 @media (max-width:1279px){
-  .f-cube-scene{
-    --csize: calc(var(--size, 160px) * 0.65);
+  .cube-face svg{
+    width: calc(var(--size, 140px) * 0.30);
+    height: calc(var(--size, 140px) * 0.30);
   }
 }
-
 @media (prefers-reduced-motion: reduce){
-  .f-icon-float, .f-cube, .f-cube-face::after{animation:none}
+  .f-icon-float, .cube{ animation: none }
 }
 
 /* ============================================================
-   INTRO — элегантный, без вращения лого
+   INTRO
    ============================================================ */
 #intro{
   position:fixed;inset:0;z-index:9999;overflow:hidden;
-  background:radial-gradient(ellipse at 50% 35%,#0a0a14 0%,#04040a 55%,#020205 100%);
+  background:radial-gradient(ellipse at 50% 50%,#0a0a14 0%,#04040a 45%,#020205 100%);
   display:flex;flex-direction:column;justify-content:center;align-items:center;
   transition:opacity 1s cubic-bezier(.16,1,.3,1), filter 1s cubic-bezier(.16,1,.3,1);
-  perspective: 1200px;
 }
 #intro.fade-out{
   opacity:0;
-  filter:blur(26px) scale(1.10);
+  filter:blur(24px) scale(1.06);
   pointer-events:none;
 }
 
-/* Фон интро */
 .intro-bg{
-  position:absolute;inset:0;overflow:hidden;pointer-events:none;
-}
-.intro-bg-glow{
-  position:absolute;border-radius:50%;filter:blur(120px);
-  mix-blend-mode:screen;
-}
-.intro-bg-glow-1{
-  width:70vmax;height:70vmax;top:-20%;left:-20%;
-  background:radial-gradient(circle, rgba(90,110,200,.24), transparent 65%);
-  animation: introGlowA 12s ease-in-out infinite alternate;
-}
-.intro-bg-glow-2{
-  width:60vmax;height:60vmax;bottom:-20%;right:-20%;
-  background:radial-gradient(circle, rgba(150,90,220,.20), transparent 65%);
-  animation: introGlowB 14s ease-in-out infinite alternate;
-}
-@keyframes introGlowA{
-  0%{transform: translate(0,0) scale(1); opacity:.7}
-  100%{transform: translate(80px, 40px) scale(1.15); opacity:1}
-}
-@keyframes introGlowB{
-  0%{transform: translate(0,0) scale(1.05); opacity:.75}
-  100%{transform: translate(-60px, -50px) scale(.95); opacity:1}
-}
-.intro-bg-grid{
   position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 5%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 5%, transparent 70%);
-  animation: introGridShift 45s linear infinite;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(120,100,255,.24) 0%, transparent 42%),
+    radial-gradient(circle at 50% 50%, rgba(80,120,220,.16) 0%, transparent 62%);
+  animation:introBgPulse 4s ease-in-out infinite;
+  pointer-events:none;
 }
-@keyframes introGridShift{
-  0%{background-position:0 0,0 0}
-  100%{background-position:56px 56px,56px 56px}
-}
-.intro-bg-noise{
-  position:absolute;inset:0;opacity:.045;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-}
-.intro-particles{
-  position:absolute;inset:0;overflow:hidden;
+@keyframes introBgPulse{
+  0%,100%{opacity:.75;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.10)}
 }
 
+.intro-rays{
+  position:absolute;top:50%;left:50%;
+  width:1400px;height:1400px;
+  transform:translate(-50%,-50%);
+  background:conic-gradient(from 0deg,
+    transparent 0deg, rgba(160,150,255,.10) 14deg, transparent 30deg,
+    transparent 60deg, rgba(160,150,255,.07) 74deg, transparent 90deg,
+    transparent 120deg, rgba(160,150,255,.10) 134deg, transparent 150deg,
+    transparent 180deg, rgba(160,150,255,.07) 194deg, transparent 210deg,
+    transparent 240deg, rgba(160,150,255,.10) 254deg, transparent 270deg,
+    transparent 300deg, rgba(160,150,255,.07) 314deg, transparent 330deg,
+    transparent 360deg);
+  filter:blur(22px);
+  animation:raysSpin 55s linear infinite;
+  opacity:.85;
+  pointer-events:none;
+}
+@keyframes raysSpin{
+  to { transform: translate(-50%,-50%) rotate(360deg); }
+}
+
+#intro-particles{
+  position:absolute;inset:0;
+  pointer-events:none;
+  z-index:1;
+}
 .intro-particle{
   position:absolute;
-  width:3px;height:3px;border-radius:50%;
+  width:3px;height:3px;
   background:#fff;
-  box-shadow: 0 0 8px rgba(255,255,255,.9), 0 0 20px rgba(160,150,255,.7);
-  opacity:0;
-  animation: introParticleFloat linear infinite;
+  border-radius:50%;
+  box-shadow:0 0 10px rgba(180,170,255,.9), 0 0 20px rgba(160,150,255,.5);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: particleConverge 2s cubic-bezier(.5,0,.3,1) forwards;
   will-change: transform, opacity;
 }
-@keyframes introParticleFloat{
-  0%{ opacity:0; transform: translate3d(0,0,0) scale(.5); }
-  15%{ opacity:.9; }
-  50%{ opacity:1; }
-  85%{ opacity:.6; }
-  100%{ opacity:0; transform: translate3d(var(--dx,0), var(--dy,-220px), 0) scale(1.3); }
+@keyframes particleConverge{
+  0% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(.35); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3); }
 }
 
-/* Сцена интро */
-.intro-stage{
-  position:relative;
+.intro-content{
+  position:relative;z-index:3;
   display:flex;flex-direction:column;justify-content:center;align-items:center;
-  z-index:2;
-  transform-style:preserve-3d;
 }
 
-/* Кольца вокруг лого */
-.intro-ring{
-  position:absolute;
-  top:50%;left:50%;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.22);
-  transform: translate(-50%,-50%) scale(.3);
-  opacity:0;
-  pointer-events:none;
-  box-shadow:
-    0 0 24px rgba(160,150,255,.35),
-    inset 0 0 24px rgba(160,150,255,.18);
-}
-.intro-ring-1{
-  width:220px;height:220px;
-  animation: introRingExpand 3.4s cubic-bezier(.16,1,.3,1) .4s infinite;
-}
-.intro-ring-2{
-  width:220px;height:220px;
-  animation: introRingExpand 3.4s cubic-bezier(.16,1,.3,1) 1.2s infinite;
-}
-.intro-ring-3{
-  width:220px;height:220px;
-  animation: introRingExpand 3.4s cubic-bezier(.16,1,.3,1) 2s infinite;
-}
-@keyframes introRingExpand{
-  0%{ transform: translate(-50%,-50%) scale(.55); opacity:0; border-color: rgba(255,255,255,.35); }
-  20%{ opacity:.9; }
-  100%{ transform: translate(-50%,-50%) scale(2.4); opacity:0; border-color: rgba(160,150,255,0); }
-}
-
-/* Логотип */
 .intro-logo-wrap{
   position:relative;
-  width:120px;height:120px;
-  animation: introLogoAppear 1.4s cubic-bezier(.16,1,.3,1) both;
-  transform-style:preserve-3d;
-}
-@keyframes introLogoAppear{
-  0%{ opacity:0; transform: scale(.4) translateY(30px); filter: blur(20px); }
-  60%{ opacity:1; filter: blur(0); }
-  100%{ opacity:1; transform: scale(1) translateY(0); filter: blur(0); }
+  display:flex;align-items:center;justify-content:center;
+  width:200px;height:200px;
 }
 
-.intro-logo-glow{
-  position:absolute;inset:-40%;
-  background: radial-gradient(circle, rgba(180,170,255,.42) 0%, rgba(150,140,255,.15) 40%, transparent 70%);
-  filter: blur(28px);
-  animation: introLogoGlow 3.5s ease-in-out infinite;
+.intro-pulse-ring{
+  position:absolute;
+  width:140px;height:140px;
+  border-radius:34px;
+  border: 2px solid rgba(180,170,255,.55);
+  box-shadow:
+    0 0 40px rgba(160,150,255,.45),
+    inset 0 0 40px rgba(160,150,255,.2);
+  animation: pulseRing 3s cubic-bezier(.16,1,.3,1) infinite;
   pointer-events:none;
+  opacity:0;
 }
-@keyframes introLogoGlow{
-  0%,100%{ opacity:.7; transform: scale(1); }
-  50%{ opacity:1; transform: scale(1.10); }
+.intro-pulse-ring.delay1{ animation-delay: 1s; }
+.intro-pulse-ring.delay2{ animation-delay: 2s; }
+@keyframes pulseRing{
+  0% { transform: scale(1); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: scale(3.4); opacity: 0; }
 }
 
 .intro-logo{
   position:relative;
-  width:120px;height:120px;
-  border-radius:28px;
+  width:140px;height:140px;border-radius:34px;
   display:flex;justify-content:center;align-items:center;
-  background:
-    linear-gradient(145deg, #ffffff 0%, #f2f0ff 60%, #ded9ff 100%);
-  color:#000;
-  font-weight:800;
-  font-size:48px;
-  letter-spacing:-4px;
-  overflow:hidden;
+  background:linear-gradient(145deg,#ffffff 0%,#e6e3ff 45%,#c4baff 100%);
+  color:#000;font-weight:800;font-size:58px;letter-spacing:-5px;
   box-shadow:
-    0 0 60px rgba(255,255,255,.55),
-    0 0 120px rgba(160,150,255,.45),
-    0 20px 60px rgba(0,0,0,.55),
-    inset 0 1px 0 rgba(255,255,255,.9);
+    0 0 60px rgba(255,255,255,.9),
+    0 0 120px rgba(160,140,255,.6),
+    0 0 200px rgba(140,130,255,.35),
+    inset 0 -6px 14px rgba(0,0,0,.16),
+    inset 0 6px 14px rgba(255,255,255,.9);
+  animation: logoBreathe 2.4s ease-in-out infinite, logoIn .9s cubic-bezier(.16,1,.3,1) both;
+  overflow:hidden;
+  z-index:2;
+  text-shadow:0 1px 0 rgba(255,255,255,.6);
 }
-
-/* Блик на лого */
-.intro-logo::before{
-  content:'';position:absolute;
-  top:0;left:-60%;bottom:0;width:40%;
-  background: linear-gradient(115deg,
-    transparent 0%,
-    rgba(255,255,255,0) 20%,
-    rgba(255,255,255,.85) 50%,
-    rgba(255,255,255,0) 80%,
-    transparent 100%);
-  transform: skewX(-22deg);
-  animation: introLogoShine 2.6s ease-in-out .8s infinite;
-  mix-blend-mode: screen;
-  pointer-events:none;
+@keyframes logoIn{
+  0%{opacity:0;transform:scale(.4);filter:blur(24px)}
+  100%{opacity:1;transform:none;filter:none}
 }
-@keyframes introLogoShine{
-  0%{ left:-60%; opacity:0; }
-  20%{ opacity:1; }
-  60%{ left:130%; opacity:1; }
-  61%{ opacity:0; }
-  100%{ left:130%; opacity:0; }
-}
-
-/* Мягкое мерцание внутри */
-.intro-logo::after{
-  content:'';position:absolute;inset:0;
-  background: radial-gradient(circle at 50% 120%, rgba(160,150,255,.35), transparent 60%);
-  pointer-events:none;
+@keyframes logoBreathe{
+  0%,100%{
+    transform: scale(1);
+    box-shadow:
+      0 0 60px rgba(255,255,255,.9),
+      0 0 120px rgba(160,140,255,.6),
+      0 0 200px rgba(140,130,255,.35),
+      inset 0 -6px 14px rgba(0,0,0,.16),
+      inset 0 6px 14px rgba(255,255,255,.9);
+  }
+  50%{
+    transform: scale(1.045);
+    box-shadow:
+      0 0 90px rgba(255,255,255,1),
+      0 0 160px rgba(160,140,255,.85),
+      0 0 260px rgba(140,130,255,.5),
+      inset 0 -6px 14px rgba(0,0,0,.16),
+      inset 0 6px 14px rgba(255,255,255,.9);
+  }
 }
 
 .intro-logo-text{
   position:relative;
-  z-index:2;
-  display:inline-flex;
-  gap:0;
-}
-.intro-logo-text span{
-  display:inline-block;
-  animation: introLetterFloat 4s ease-in-out infinite;
-}
-.intro-logo-text span:last-child{
-  animation-delay: .8s;
-}
-@keyframes introLetterFloat{
-  0%,100%{ transform: translateY(0); }
-  50%{ transform: translateY(-3px); }
+  z-index:3;
 }
 
-/* Заголовок SCALECORE — буквы появляются снизу */
+.intro-logo-shine{
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background: linear-gradient(120deg, transparent 25%, rgba(255,255,255,.95) 50%, transparent 75%);
+  background-size: 260% 100%;
+  animation: shineSweep 2.6s cubic-bezier(.6,0,.3,1) infinite;
+  pointer-events:none;
+  mix-blend-mode: overlay;
+  z-index:2;
+}
+@keyframes shineSweep{
+  0% { background-position: 220% 0; }
+  100% { background-position: -140% 0; }
+}
+
+.intro-logo-ring{
+  position:absolute;
+  inset:-14px;
+  border-radius:44px;
+  border:1px solid rgba(255,255,255,.28);
+  pointer-events:none;
+  animation: logoRingPulse 3.4s ease-in-out infinite;
+}
+.intro-logo-ring.outer{
+  inset:-28px;
+  border-radius:54px;
+  border-color: rgba(160,150,255,.20);
+  animation-delay: .4s;
+}
+@keyframes logoRingPulse{
+  0%,100%{ opacity:.5; transform: scale(1); }
+  50%{ opacity:1; transform: scale(1.03); }
+}
+
 .intro-title{
-  margin-top:44px;
+  margin-top:36px;
   display:flex;
-  gap:.05em;
-  font-size:clamp(22px, 3.2vw, 34px);
-  font-weight:800;
-  letter-spacing:.42em;
-  color:#fff;
+  gap:0;
+  font-size:22px;font-weight:800;letter-spacing:12px;
   text-transform:uppercase;
-  text-shadow:
-    0 0 24px rgba(255,255,255,.35),
-    0 0 60px rgba(160,150,255,.35);
-  padding-left:.42em;
+  color:#fff;
+  text-shadow: 0 0 30px rgba(160,150,255,.6);
 }
 .intro-title span{
   display:inline-block;
   opacity:0;
-  transform: translateY(28px) rotateX(-40deg);
-  animation: introLetterIn .9s cubic-bezier(.16,1,.3,1) forwards;
-  transform-origin:50% 100%;
+  transform: translateY(14px) rotateX(-60deg);
+  animation: letterIn .8s cubic-bezier(.16,1,.3,1) forwards;
+  animation-delay: calc(.9s + var(--i) * .07s);
+  will-change: transform, opacity;
 }
-@keyframes introLetterIn{
-  0%{ opacity:0; transform: translateY(28px) rotateX(-40deg); filter: blur(6px); }
-  60%{ opacity:1; filter: blur(0); }
-  100%{ opacity:1; transform: translateY(0) rotateX(0); filter: blur(0); }
+@keyframes letterIn{
+  to { opacity: 1; transform: none; }
 }
 
-/* Подзаголовок */
 .intro-sub{
-  margin-top:18px;
-  font-size:10.5px;
-  letter-spacing:.55em;
-  color:#7d7d8c;
+  margin-top:14px;
+  font-size:10px;letter-spacing:8px;color:#7a7a85;
   text-transform:uppercase;
   opacity:0;
-  transform: translateY(10px);
-  animation: introSubIn .9s cubic-bezier(.16,1,.3,1) 2.05s forwards;
-  padding-left:.55em;
+  animation: subIn 1.4s ease 1.7s forwards;
   text-align:center;
 }
-@keyframes introSubIn{
-  from{ opacity:0; transform: translateY(10px); }
-  to{ opacity:.9; transform: translateY(0); }
+@keyframes subIn{
+  from { opacity:0; letter-spacing:14px; color:transparent; filter: blur(6px); }
+  to { opacity:1; letter-spacing:6px; color:#7a7a85; filter: none; }
 }
 
-/* Прогресс */
 .intro-progress{
-  margin-top:44px;
-  width:min(280px, 60vw);
-  height:2px;
+  margin-top:42px;
+  width:220px;height:2px;
+  background:rgba(255,255,255,.08);
   border-radius:2px;
-  background: rgba(255,255,255,.08);
   overflow:hidden;
   position:relative;
-  opacity:0;
-  animation: introSubIn .6s ease 2.3s forwards;
 }
 .intro-progress-bar{
-  height:100%;
-  width:0%;
-  background: linear-gradient(90deg, rgba(255,255,255,.2), #fff 50%, rgba(180,170,255,.9));
-  box-shadow: 0 0 12px rgba(255,255,255,.8), 0 0 26px rgba(160,150,255,.6);
-  animation: introProgressFill 2.6s cubic-bezier(.16,1,.3,1) 2.35s forwards;
+  height:100%;width:0;
+  background:linear-gradient(90deg, transparent, #fff, transparent);
+  box-shadow: 0 0 14px #fff, 0 0 26px rgba(160,150,255,.6);
+  animation: introProgress 2.2s cubic-bezier(.5,0,.3,1) forwards;
 }
-@keyframes introProgressFill{
-  from{ width:0%; }
-  to{ width:100%; }
+@keyframes introProgress{
+  0% { width:0; }
+  100% { width:100%; }
 }
 
-/* Тонкая световая полоска сверху и снизу */
-.intro-frame{
-  position:absolute;left:0;right:0;height:1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
-  opacity:0;
-  animation: introFrameIn 1s ease 1.2s forwards;
+.intro-burst{
+  position:absolute;
+  top:50%;left:50%;
+  width:120px;height:120px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(200,190,255,.7) 28%, transparent 68%);
+  transform: translate(-50%,-50%) scale(0);
+  opacity: 0;
+  pointer-events:none;
+  z-index: 8;
+  will-change: transform, opacity;
 }
-.intro-frame.top{ top:6%; }
-.intro-frame.bottom{ bottom:6%; }
-@keyframes introFrameIn{ to{ opacity:.55; } }
+#intro.fade-out .intro-burst{
+  animation: introBurst .9s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes introBurst{
+  0% { opacity: 1; transform: translate(-50%,-50%) scale(0); }
+  60% { opacity: .8; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(26); }
+}
 
-#flash{
-  position:fixed;inset:0;background:#fff;z-index:10000;opacity:0;pointer-events:none;
-  transition:opacity .55s ease-out;
-}
+#flash{position:fixed;inset:0;background:#fff;z-index:10000;opacity:0;pointer-events:none;transition:opacity .5s ease-out}
 
 /* ============================================================
    HEADER
@@ -708,22 +695,6 @@ header::before{
   font-weight:800;font-size:14px;letter-spacing:-1px;flex-shrink:0;
   transition:transform .5s var(--ease-spring), box-shadow .4s;
   box-shadow:0 0 0 rgba(255,255,255,0);
-  position:relative;
-}
-.logo-mark::after{
-  content:'';position:absolute;inset:0;border-radius:inherit;
-  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.9) 50%, transparent 70%);
-  background-size:250% 100%;
-  background-position:200% 0;
-  mix-blend-mode:screen;
-  opacity:0;
-  transition: opacity .3s;
-  pointer-events:none;
-}
-.logo:hover .logo-mark::after{ opacity:1; animation: logoMarkShine 1.2s ease forwards; }
-@keyframes logoMarkShine{
-  0%{ background-position:200% 0; }
-  100%{ background-position:-100% 0; }
 }
 .logo:hover .logo-mark{
   transform:rotate(-8deg) scale(1.08);
@@ -800,17 +771,15 @@ main{position:relative;z-index:2}
   position:relative;
   overflow:hidden;
 }
-.section-label::before{
-  content:'';position:absolute;inset:0;
-  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.25) 50%, transparent 70%);
-  background-size:250% 100%;
-  background-position:200% 0;
-  animation: labelShine 5s ease-in-out infinite;
-  pointer-events:none;
+.section-label::after{
+  content:'';
+  position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+  animation:labelSweep 4s ease-in-out infinite;
 }
-@keyframes labelShine{
-  0%,100%{ background-position:200% 0; }
-  50%{ background-position:-100% 0; }
+@keyframes labelSweep{
+  0%{left:-100%}
+  60%,100%{left:120%}
 }
 .section-label:hover{color:#fff;border-color:rgba(255,255,255,.25);letter-spacing:4px}
 .section-title{
@@ -863,6 +832,12 @@ main{position:relative;z-index:2}
   color:#ffffff;
   position:relative;
   display:inline-block;
+  filter: drop-shadow(0 0 40px rgba(160,150,255,.25));
+  animation: heroGlowPulse 5s ease-in-out infinite;
+}
+@keyframes heroGlowPulse{
+  0%,100%{filter: drop-shadow(0 0 40px rgba(160,150,255,.25))}
+  50%{filter: drop-shadow(0 0 60px rgba(180,170,255,.45))}
 }
 .hero-h1 .accent{
   color:#ffffff;
@@ -875,14 +850,14 @@ main{position:relative;z-index:2}
   content:'';
   position:absolute;
   inset:-10px -20px;
-  background:radial-gradient(ellipse at center,rgba(160,150,255,.18) 0%,transparent 65%);
+  background:radial-gradient(ellipse at center,rgba(160,150,255,.22) 0%,transparent 65%);
   filter:blur(18px);
   z-index:-1;
   animation:accentGlow 4s ease-in-out infinite;
 }
 @keyframes accentGlow{
   0%,100%{opacity:.5;transform:scale(1)}
-  50%{opacity:1;transform:scale(1.08)}
+  50%{opacity:1;transform:scale(1.12)}
 }
 
 .hero-lead{
@@ -915,6 +890,7 @@ main{position:relative;z-index:2}
   background:linear-gradient(180deg,#fff,#888);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   font-variant-numeric:tabular-nums;
+  filter: drop-shadow(0 0 12px rgba(180,170,255,.2));
 }
 .stat span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-top:6px}
 
@@ -1158,6 +1134,32 @@ main{position:relative;z-index:2}
 @keyframes featuredGlow{
   0%,100%{box-shadow:0 20px 70px rgba(140,130,255,.12),0 0 0 0 rgba(140,130,255,0)}
   50%{box-shadow:0 22px 80px rgba(140,130,255,.2),0 0 60px rgba(140,130,255,.12)}
+}
+.price-card.featured::before{
+  content:'';
+  position:absolute;inset:-1px;
+  border-radius:inherit;
+  background: conic-gradient(from var(--angle),
+    transparent 0deg,
+    rgba(180,170,255,.55) 60deg,
+    transparent 120deg,
+    transparent 180deg,
+    rgba(120,150,255,.55) 240deg,
+    transparent 300deg,
+    transparent 360deg);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  animation: rotateBorderAngle 6s linear infinite;
+  pointer-events:none;
+  opacity:.75;
+  z-index:1;
+}
+@keyframes rotateBorderAngle{
+  to { --angle: 360deg; }
 }
 .price-badge{
   position:absolute;top:-12px;left:50%;
@@ -1618,6 +1620,10 @@ input[type="number"]{-moz-appearance:textfield}
   .svc-price{font-size:20px}
   .svc-btn{width:100%;justify-content:center}
   .svc-footer{flex-direction:column;align-items:stretch}
+  .intro-logo{width:110px;height:110px;font-size:46px;border-radius:28px}
+  .intro-title{font-size:16px;letter-spacing:8px}
+  .intro-sub{font-size:8px;letter-spacing:4px}
+  .intro-pulse-ring{width:110px;height:110px;border-radius:28px}
 }
 @media (max-width:380px){
   .nav-item span{display:none}
@@ -1647,8 +1653,9 @@ input[type="number"]{-moz-appearance:textfield}
 /* ============================================================
    ANIMATIONS
    ============================================================ */
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
 </style>
 </head>
 <body>
@@ -1658,6 +1665,7 @@ input[type="number"]{-moz-appearance:textfield}
 
 <div id="bg-layer">
   <div class="bg-flow"></div>
+  <div class="bg-aurora"></div>
   <div class="bg-conic"></div>
   <div class="bg-orb o1"></div>
   <div class="bg-orb o2"></div>
@@ -1665,7 +1673,6 @@ input[type="number"]{-moz-appearance:textfield}
   <div class="bg-topglow"></div>
   <div class="bg-grid"></div>
   <div class="bg-stars"></div>
-  <div class="bg-particles" id="bg-particles"></div>
   <div class="bg-vignette"></div>
   <div class="bg-noise"></div>
 </div>
@@ -1673,157 +1680,34 @@ input[type="number"]{-moz-appearance:textfield}
 <div id="flash"></div>
 
 <div id="intro">
-  <div class="intro-bg">
-    <div class="intro-bg-glow intro-bg-glow-1"></div>
-    <div class="intro-bg-glow intro-bg-glow-2"></div>
-    <div class="intro-bg-grid"></div>
-    <div class="intro-particles" id="intro-particles"></div>
-    <div class="intro-bg-noise"></div>
-  </div>
-  <div class="intro-frame top"></div>
-  <div class="intro-frame bottom"></div>
-  <div class="intro-stage">
-    <div class="intro-ring intro-ring-1"></div>
-    <div class="intro-ring intro-ring-2"></div>
-    <div class="intro-ring intro-ring-3"></div>
+  <div class="intro-bg"></div>
+  <div class="intro-rays"></div>
+  <div id="intro-particles"></div>
+  <div class="intro-content">
     <div class="intro-logo-wrap">
-      <div class="intro-logo-glow"></div>
+      <div class="intro-pulse-ring"></div>
+      <div class="intro-pulse-ring delay1"></div>
+      <div class="intro-pulse-ring delay2"></div>
+      <div class="intro-logo-ring"></div>
+      <div class="intro-logo-ring outer"></div>
       <div class="intro-logo">
-        <span class="intro-logo-text"><span>S</span><span>C</span></span>
+        <span class="intro-logo-text">SC</span>
+        <div class="intro-logo-shine"></div>
       </div>
     </div>
     <div class="intro-title">
-      <span style="animation-delay:1.05s">S</span>
-      <span style="animation-delay:1.15s">C</span>
-      <span style="animation-delay:1.25s">A</span>
-      <span style="animation-delay:1.35s">L</span>
-      <span style="animation-delay:1.45s">E</span>
-      <span style="animation-delay:1.55s">C</span>
-      <span style="animation-delay:1.65s">O</span>
-      <span style="animation-delay:1.75s">R</span>
-      <span style="animation-delay:1.85s">E</span>
+      <span style="--i:0">S</span><span style="--i:1">C</span><span style="--i:2">A</span><span style="--i:3">L</span><span style="--i:4">E</span><span style="--i:5">C</span><span style="--i:6">O</span><span style="--i:7">R</span><span style="--i:8">E</span>
     </div>
-    <div class="intro-sub">Система продаж для бизнеса</div>
+    <div class="intro-sub">СИСТЕМА ПРОДАЖ ДЛЯ БИЗНЕСА</div>
     <div class="intro-progress"><div class="intro-progress-bar"></div></div>
   </div>
+  <div class="intro-burst"></div>
 </div>
 
 <div id="toast-container"></div>
 
-<!-- ============ FLOATING 3D CUBES ============ -->
-<div class="float-icons" id="float-icons" aria-hidden="true">
-
-  <!-- ЛЕВЫЙ КЛАСТЕР -->
-  <div class="f-icon" data-side="left" data-depth="0.85"
-       style="--x:-55px;--y:8%;--size:200px;--z:1;--anim:iconFloatA;--dur:9s;--delay:-1s;--exit-delay:0s;--spin:24s;--spin-delay:-3s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-cube-scene">
-          <div class="f-cube">
-            <div class="f-cube-face front"></div>
-            <div class="f-cube-face back"></div>
-            <div class="f-cube-face right"></div>
-            <div class="f-cube-face left"></div>
-            <div class="f-cube-face top"></div>
-            <div class="f-cube-face bottom"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="f-icon" data-side="left" data-depth="1.2"
-       style="--x:-110px;--y:18%;--size:340px;--z:2;--anim:iconFloatB;--dur:11s;--delay:-2.5s;--exit-delay:.07s;--spin:28s;--spin-delay:-8s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-cube-scene">
-          <div class="f-cube">
-            <div class="f-cube-face front"></div>
-            <div class="f-cube-face back"></div>
-            <div class="f-cube-face right"></div>
-            <div class="f-cube-face left"></div>
-            <div class="f-cube-face top"></div>
-            <div class="f-cube-face bottom"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="f-icon" data-side="left" data-depth="1.0"
-       style="--x:-42px;--y:50%;--size:240px;--z:3;--anim:iconFloatC;--dur:10s;--delay:-3s;--exit-delay:.14s;--spin:22s;--spin-delay:-5s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-cube-scene">
-          <div class="f-cube">
-            <div class="f-cube-face front"></div>
-            <div class="f-cube-face back"></div>
-            <div class="f-cube-face right"></div>
-            <div class="f-cube-face left"></div>
-            <div class="f-cube-face top"></div>
-            <div class="f-cube-face bottom"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ПРАВЫЙ КЛАСТЕР -->
-  <div class="f-icon" data-side="right" data-depth="0.85"
-       style="--x:-55px;--y:9%;--size:200px;--z:1;--anim:iconFloatE;--dur:9.5s;--delay:-1.5s;--exit-delay:.04s;--spin:26s;--spin-delay:-6s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-cube-scene">
-          <div class="f-cube">
-            <div class="f-cube-face front"></div>
-            <div class="f-cube-face back"></div>
-            <div class="f-cube-face right"></div>
-            <div class="f-cube-face left"></div>
-            <div class="f-cube-face top"></div>
-            <div class="f-cube-face bottom"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="f-icon" data-side="right" data-depth="1.2"
-       style="--x:-110px;--y:19%;--size:340px;--z:2;--anim:iconFloatF;--dur:10.5s;--delay:-2s;--exit-delay:.11s;--spin:30s;--spin-delay:-10s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-cube-scene">
-          <div class="f-cube">
-            <div class="f-cube-face front"></div>
-            <div class="f-cube-face back"></div>
-            <div class="f-cube-face right"></div>
-            <div class="f-cube-face left"></div>
-            <div class="f-cube-face top"></div>
-            <div class="f-cube-face bottom"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="f-icon" data-side="right" data-depth="1.0"
-       style="--x:-42px;--y:52%;--size:240px;--z:3;--anim:iconFloatD;--dur:11s;--delay:-3.5s;--exit-delay:.18s;--spin:24s;--spin-delay:-2s;">
-    <div class="f-icon-parallax">
-      <div class="f-icon-float">
-        <div class="f-cube-scene">
-          <div class="f-cube">
-            <div class="f-cube-face front"></div>
-            <div class="f-cube-face back"></div>
-            <div class="f-cube-face right"></div>
-            <div class="f-cube-face left"></div>
-            <div class="f-cube-face top"></div>
-            <div class="f-cube-face bottom"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
+<!-- FLOATING 3D CUBES (rendered by JS) -->
+<div class="float-icons" id="float-icons" aria-hidden="true"></div>
 
 <header>
   <div class="logo" onclick="go('home')">
@@ -1875,7 +1759,6 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
     <div class="catalog-grid" id="catalog-grid"></div>
 
-    
     <div class="extended-services">
       <div class="section-head" style="margin-bottom:48px">
         <div class="section-label reveal">Услуги и цены</div>
@@ -2123,70 +2006,104 @@ const PRICING = [
 ];
 
 /* ============================================================
-   ICON SVG для кубов (одна иконка на все грани)
+   FLOATING CUBES CONFIG
    ============================================================ */
-const CUBE_ICONS = [
-  // left cluster
-  '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
-  '<rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><line x1="6" y1="6.5" x2="6.01" y2="6.5"/><line x1="6" y1="17.5" x2="6.01" y2="17.5"/>',
-  '<rect x="2" y="3" width="20" height="18" rx="2.5"/><polyline points="7 8.5 10 11.5 7 14.5"/><line x1="12" y1="14.5" x2="17" y2="14.5"/>',
-  // right cluster
-  '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
-  '<path d="M5 17h14"/><path d="M6 17V9.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 18 9.5V17"/><path d="M9 8V6h6v2"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/>',
-  '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M20 12c0 1.66-3.58 3-8 3s-8-1.34-8-3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>'
+const FLOAT_ICONS = [
+  {
+    side:'left', x:'-55px', y:'8%', size:110, depth:0.85, z:1,
+    anim:'iconFloatA', dur:'9s', delay:'-1s', exitDelay:'0s', spin:'24s',
+    icon:'<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>'
+  },
+  {
+    side:'left', x:'-110px', y:'18%', size:180, depth:1.2, z:2,
+    anim:'iconFloatB', dur:'11s', delay:'-2.5s', exitDelay:'.07s', spin:'32s',
+    icon:'<rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><line x1="6" y1="6.5" x2="6.01" y2="6.5"/><line x1="6" y1="17.5" x2="6.01" y2="17.5"/>'
+  },
+  {
+    side:'left', x:'-42px', y:'50%', size:130, depth:1.0, z:3,
+    anim:'iconFloatC', dur:'10s', delay:'-3s', exitDelay:'.14s', spin:'26s',
+    icon:'<rect x="2" y="3" width="20" height="18" rx="2.5"/><polyline points="7 8.5 10 11.5 7 14.5"/><line x1="12" y1="14.5" x2="17" y2="14.5"/>'
+  },
+  {
+    side:'right', x:'-55px', y:'9%', size:110, depth:0.85, z:1,
+    anim:'iconFloatE', dur:'9.5s', delay:'-1.5s', exitDelay:'.04s', spin:'22s',
+    icon:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>'
+  },
+  {
+    side:'right', x:'-110px', y:'19%', size:180, depth:1.2, z:2,
+    anim:'iconFloatF', dur:'10.5s', delay:'-2s', exitDelay:'.11s', spin:'30s',
+    icon:'<path d="M5 17h14"/><path d="M6 17V9.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 18 9.5V17"/><path d="M9 8V6h6v2"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/>'
+  },
+  {
+    side:'right', x:'-42px', y:'52%', size:130, depth:1.0, z:3,
+    anim:'iconFloatD', dur:'11s', delay:'-3.5s', exitDelay:'.18s', spin:'26s',
+    icon:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M20 12c0 1.66-3.58 3-8 3s-8-1.34-8-3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>'
+  }
 ];
 
 /* ============================================================
-   Инициализация кубов — заполняем иконками все грани
+   RENDER FLOATING CUBES
    ============================================================ */
-function initCubes(){
-  const cubes = document.querySelectorAll('.f-icon');
-  cubes.forEach((cubeEl, idx) => {
-    const iconSvg = CUBE_ICONS[idx % CUBE_ICONS.length];
-    const faces = cubeEl.querySelectorAll('.f-cube-face');
-    faces.forEach(face => {
-      face.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${iconSvg}</svg>`;
-    });
-  });
+function renderFloatIcons(){
+  const container = document.getElementById('float-icons');
+  if (!container) return;
+  const FACES = ['front','back','right','left','top','bottom'];
+  container.innerHTML = FLOAT_ICONS.map(cfg => `
+    <div class="f-icon" data-side="${cfg.side}" data-depth="${cfg.depth}"
+      style="--x:${cfg.x};--y:${cfg.y};--size:${cfg.size}px;--z:${cfg.z};--anim:${cfg.anim};--dur:${cfg.dur};--delay:${cfg.delay};--exit-delay:${cfg.exitDelay};--spin-dur:${cfg.spin};">
+      <div class="f-icon-parallax">
+        <div class="f-icon-float">
+          <div class="cube-scene">
+            <div class="cube">
+              ${FACES.map(f => `
+                <div class="cube-face ${f}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${cfg.icon}</svg>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   INTRO PARTICLES
+   ============================================================ */
+function initIntroParticles(){
+  const container = document.getElementById('intro-particles');
+  if (!container) return;
+  const N = 46;
+  for (let i = 0; i < N; i++) {
+    const p = document.createElement('div');
+    p.className = 'intro-particle';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 320 + Math.random() * 520;
+    const tx = Math.cos(angle) * dist;
+    const ty = Math.sin(angle) * dist;
+    p.style.setProperty('--tx', tx.toFixed(1) + 'px');
+    p.style.setProperty('--ty', ty.toFixed(1) + 'px');
+    p.style.animationDelay = (Math.random() * 1.6).toFixed(2) + 's';
+    p.style.animationDuration = (1.6 + Math.random() * 1.6).toFixed(2) + 's';
+    p.style.left = '50%';
+    p.style.top = '50%';
+    const sz = 1.6 + Math.random() * 2.2;
+    p.style.width = sz.toFixed(2) + 'px';
+    p.style.height = sz.toFixed(2) + 'px';
+    container.appendChild(p);
+  }
 }
 
 /* ============================================================
    INIT
    ============================================================ */
 window.addEventListener('load', () => {
-  document.body.classList.add('home-page');
-
-  initCubes();
+  // prepare cubes + intro particles
+  renderFloatIcons();
   initIntroParticles();
-  initBgParticles();
 
-  setTimeout(() => {
-    const intro = document.getElementById('intro');
-    const flash = document.getElementById('flash');
-    if (intro) {
-      intro.classList.add('fade-out');
-      setTimeout(() => {
-        intro.style.display = 'none';
-        intro.style.visibility = 'hidden';
-      }, 1000);
-    }
-    if (flash) {
-      flash.style.opacity = '1';
-      setTimeout(() => { flash.style.opacity = '0'; }, 280);
-    }
-    activateReveal(document.getElementById('page-home'));
-  }, 5000);
-
-  setTimeout(() => {
-    const intro = document.getElementById('intro');
-    if (intro && intro.style.display !== 'none') {
-      intro.classList.add('fade-out');
-      intro.style.display = 'none';
-      intro.style.visibility = 'hidden';
-      activateReveal(document.getElementById('page-home'));
-    }
-  }, 7200);
-
+  // render static content
   renderCatalog();
   renderExtendedServices();
   renderPricing();
@@ -2201,51 +2118,44 @@ window.addEventListener('load', () => {
   initTilt();
   initCounters();
   initFloatIcons();
+
+  // intro sequence
+  const intro = document.getElementById('intro');
+  const flash = document.getElementById('flash');
+
+  setTimeout(() => {
+    if (intro) {
+      intro.classList.add('fade-out');
+      // reveal the icons with stagger after intro begins to fade
+      setTimeout(() => {
+        document.body.classList.add('home-page');
+        activateReveal(document.getElementById('page-home'));
+      }, 260);
+      setTimeout(() => {
+        intro.style.display = 'none';
+        intro.style.visibility = 'hidden';
+      }, 1050);
+    }
+    if (flash) {
+      flash.style.opacity = '1';
+      setTimeout(() => { flash.style.opacity = '0'; }, 320);
+    }
+  }, 2400);
+
+  // safety net: if something breaks, force hide
+  setTimeout(() => {
+    const el = document.getElementById('intro');
+    if (el && el.style.display !== 'none') {
+      el.classList.add('fade-out');
+      el.style.display = 'none';
+      el.style.visibility = 'hidden';
+      if (!document.body.classList.contains('home-page')) {
+        document.body.classList.add('home-page');
+        activateReveal(document.getElementById('page-home'));
+      }
+    }
+  }, 4200);
 });
-
-/* ============================================================
-   INTRO particles
-   ============================================================ */
-function initIntroParticles(){
-  const c = document.getElementById('intro-particles');
-  if (!c) return;
-  const N = 60;
-  for (let i=0; i<N; i++){
-    const p = document.createElement('div');
-    p.className = 'intro-particle';
-    const size = Math.random()*2.6 + 1.2;
-    p.style.width = size + 'px';
-    p.style.height = size + 'px';
-    p.style.left = Math.random()*100 + '%';
-    p.style.top = (Math.random()*100) + '%';
-    p.style.animationDuration = (5 + Math.random()*7) + 's';
-    p.style.animationDelay = (Math.random()*6) + 's';
-    p.style.setProperty('--dx', (Math.random()*120 - 60) + 'px');
-    p.style.setProperty('--dy', (-150 - Math.random()*300) + 'px');
-    c.appendChild(p);
-  }
-}
-
-/* ============================================================
-   BG particles (persistent)
-   ============================================================ */
-function initBgParticles(){
-  const c = document.getElementById('bg-particles');
-  if (!c) return;
-  const N = 40;
-  for (let i=0; i<N; i++){
-    const p = document.createElement('div');
-    p.className = 'bg-particle';
-    const size = Math.random()*2 + 1;
-    p.style.width = size + 'px';
-    p.style.height = size + 'px';
-    p.style.left = Math.random()*100 + '%';
-    p.style.bottom = (Math.random()*30) + '%';
-    p.style.animationDuration = (14 + Math.random()*20) + 's';
-    p.style.animationDelay = (-Math.random()*20) + 's';
-    c.appendChild(p);
-  }
-}
 
 /* ============================================================
    NAV
@@ -2776,21 +2686,37 @@ function initMagneticButtons(){
   });
 }
 
+/* Tilt with event delegation — works with dynamically rendered cards */
 function initTilt(){
   if (matchMedia('(pointer: coarse)').matches) return;
-  const cards = document.querySelectorAll('.cat-card, .svc-card, .price-card, .review-card, .step');
-  cards.forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      const rx = -y * 5;
-      const ry = x * 5;
-      card.style.transform = `translateY(-8px) perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-    });
+  const selector = '.cat-card, .svc-card, .price-card, .review-card, .step';
+
+  document.addEventListener('mouseover', e => {
+    const card = e.target.closest(selector);
+    if (!card) return;
+    const rel = e.relatedTarget;
+    if (rel && card.contains(rel)) return;
+    card.classList.add('tilting');
+  });
+
+  document.addEventListener('mouseout', e => {
+    const card = e.target.closest(selector);
+    if (!card) return;
+    const rel = e.relatedTarget;
+    if (rel && card.contains(rel)) return;
+    card.classList.remove('tilting');
+    card.style.transform = '';
+  });
+
+  document.addEventListener('mousemove', e => {
+    const card = e.target.closest(selector);
+    if (!card || !card.classList.contains('tilting')) return;
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    const rx = -y * 5;
+    const ry = x * 5;
+    card.style.transform = `translateY(-8px) perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
   });
 }
 

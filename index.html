@@ -189,35 +189,36 @@ body:hover .cursor-glow{opacity:1}
 }
 @keyframes twinkle{0%{opacity:.35}50%{opacity:.75}100%{opacity:.5}}
 
-/* === FLOATING PARTICLES === */
+/* Новые частицы */
 .bg-particles{
-  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
 }
-.bg-particles span{
+.bg-particle{
   position:absolute;
+  width:2px;height:2px;border-radius:50%;
   background:rgba(255,255,255,.7);
-  border-radius:50%;
-  box-shadow:0 0 8px rgba(200,200,255,.8), 0 0 16px rgba(150,140,255,.4);
+  box-shadow:0 0 6px rgba(255,255,255,.9), 0 0 14px rgba(160,150,255,.6);
   animation:particleRise linear infinite;
-  will-change:transform,opacity;
+  opacity:0;
 }
 @keyframes particleRise{
-  0%{transform:translateY(105vh) translateX(0) scale(.6);opacity:0}
-  10%{opacity:1}
-  90%{opacity:1}
-  100%{transform:translateY(-10vh) translateX(40px) scale(1);opacity:0}
+  0%{opacity:0; transform:translateY(0) scale(.5)}
+  15%{opacity:.9}
+  85%{opacity:.7}
+  100%{opacity:0; transform:translateY(-120vh) scale(1.4)}
 }
 
 @media (prefers-reduced-motion: reduce){
-  .bg-flow,.bg-conic,.bg-topglow,.bg-orb,.bg-grid,.bg-stars,.bg-particles span{animation:none}
+  .bg-flow,.bg-conic,.bg-topglow,.bg-orb,.bg-grid,.bg-stars,.bg-particle{animation:none}
 }
 
 /* ============================================================
-   FLOATING SIDE ICONS — 3D CUBES
+   FLOATING SIDE — 3D CUBES
    ============================================================ */
 .float-icons{
   position:fixed;inset:0;z-index:1;pointer-events:none;
   display:none;
+  perspective: 1800px;
 }
 @media (min-width:1024px){
   .float-icons{display:block}
@@ -233,8 +234,6 @@ body:hover .cursor-glow{opacity:1}
     opacity .8s cubic-bezier(.16,1,.3,1);
   transition-delay: var(--exit-delay, 0s);
   pointer-events: none;
-  perspective: 1600px;
-  perspective-origin: 50% 50%;
 }
 .f-icon[data-side="left"]{ left: var(--x, -30px) }
 .f-icon[data-side="right"]{ right: var(--x, -30px) }
@@ -247,10 +246,7 @@ body:not(.home-page) .f-icon[data-side="right"]{
   transform: translate(220%, 40px) scale(.55);
 }
 
-.f-icon-parallax{
-  will-change: transform;
-  transform-style: preserve-3d;
-}
+.f-icon-parallax{ will-change: transform; transform-style: preserve-3d }
 
 .f-icon-float{
   animation: var(--anim, iconFloatA) var(--dur, 9s) ease-in-out infinite;
@@ -259,423 +255,429 @@ body:not(.home-page) .f-icon[data-side="right"]{
   transform-style: preserve-3d;
 }
 
-/* ——— Float keyframes (pure translation, cubes rotate themselves) ——— */
-@keyframes iconFloatA{
-  0%,100%{transform:translate(0,0)}
-  25%{transform:translate(6px,-12px)}
-  50%{transform:translate(-4px,-18px)}
-  75%{transform:translate(8px,-8px)}
+/* ============= 3D CUBE ============= */
+.f-cube-scene{
+  --csize: var(--size, 160px);
+  width: var(--csize);
+  height: var(--csize);
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  filter:
+    drop-shadow(0 30px 55px rgba(0,0,0,.65))
+    drop-shadow(0 0 45px rgba(140,130,255,.20));
+  transition: filter .6s var(--ease), transform .6s var(--ease-spring);
 }
-@keyframes iconFloatB{
-  0%,100%{transform:translate(0,0)}
-  33%{transform:translate(-10px,-16px)}
-  66%{transform:translate(6px,-6px)}
-}
-@keyframes iconFloatC{
-  0%,100%{transform:translate(0,0)}
-  20%{transform:translate(4px,-6px)}
-  50%{transform:translate(-8px,-16px)}
-  80%{transform:translate(5px,-10px)}
-}
-@keyframes iconFloatD{
-  0%,100%{transform:translate(0,0)}
-  40%{transform:translate(12px,-10px)}
-  75%{transform:translate(-6px,-20px)}
-}
-@keyframes iconFloatE{
-  0%,100%{transform:translate(0,0)}
-  25%{transform:translate(-6px,-14px)}
-  60%{transform:translate(8px,-4px)}
-}
-@keyframes iconFloatF{
-  0%,100%{transform:translate(0,0)}
-  30%{transform:translate(-8px,-18px)}
-  65%{transform:translate(10px,-6px)}
-}
-
-/* ——— THE 3D CUBE ——— */
 .f-cube{
   position: relative;
-  --cs: var(--size, 160px);
-  width: var(--cs);
-  height: var(--cs);
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
-  animation: cubeSpin var(--spin-dur, 24s) linear infinite;
+  animation: cubeSpin var(--spin, 22s) linear infinite;
+  animation-delay: var(--spin-delay, 0s);
   will-change: transform;
 }
-
 @keyframes cubeSpin{
-  from { transform: rotateX(-16deg) rotateY(0deg); }
-  to   { transform: rotateX(-16deg) rotateY(360deg); }
+  0%   { transform: rotateX(-18deg) rotateY(0deg); }
+  100% { transform: rotateX(-18deg) rotateY(360deg); }
 }
 
 .f-cube-face{
   position: absolute;
   inset: 0;
-  border-radius: calc(var(--cs, 160px) * 0.14);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--csize) * 0.12);
   background:
-    linear-gradient(145deg, rgba(34,34,52,.94) 0%, rgba(15,15,26,.9) 100%);
+    linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.02) 60%, rgba(160,150,255,.06));
   border: 1px solid rgba(255,255,255,.20);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  display: flex; align-items: center; justify-content: center;
   box-shadow:
-    inset 0 0 30px rgba(140,130,255,.14),
-    inset 0 1px 0 rgba(255,255,255,.18),
-    0 0 40px rgba(0,0,0,.45);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 -1px 0 rgba(0,0,0,.35),
+    inset 0 0 40px rgba(255,255,255,.06),
+    0 0 20px rgba(160,150,255,.10);
   overflow: hidden;
-  transition: border-color .4s, box-shadow .4s, background .4s;
+  backface-visibility: visible;
+  transform-style: preserve-3d;
 }
 
 .f-cube-face::before{
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at 28% 22%, rgba(255,255,255,.20), transparent 58%);
-  opacity: .55;
-  pointer-events: none;
+  content:'';position:absolute;inset:0;
+  background: radial-gradient(circle at 30% 22%, rgba(255,255,255,.22), transparent 62%);
+  opacity:.85;pointer-events:none;
 }
 .f-cube-face::after{
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(180,170,255,.14), transparent 40%, transparent 60%, rgba(255,255,255,.10));
-  pointer-events: none;
-  opacity: .65;
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);
+  background-size: 250% 100%;
+  background-position: 200% 0;
+  animation: faceShine 6s ease-in-out infinite;
+  pointer-events:none;
+  mix-blend-mode: overlay;
+}
+@keyframes faceShine{
+  0%,100%{background-position:200% 0}
+  50%{background-position:-100% 0}
 }
 
 .f-cube-face svg{
-  width: calc(var(--cs, 160px) * 0.34);
-  height: calc(var(--cs, 160px) * 0.34);
-  color: #fff;
-  opacity: .9;
-  filter: drop-shadow(0 0 12px rgba(255,255,255,.55));
-  position: relative;
-  z-index: 2;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: opacity .4s, filter .4s;
+  width: 42%;
+  height: 42%;
+  color:#fff;
+  opacity:.95;
+  position:relative;z-index:1;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,.55)) drop-shadow(0 0 22px rgba(160,150,255,.35));
+  transition: opacity .4s, filter .4s, transform .5s var(--ease-spring);
 }
 
-.f-cube-face.f-front  { transform: translateZ(calc(var(--cs, 160px) / 2)); }
-.f-cube-face.f-back   { transform: rotateY(180deg) translateZ(calc(var(--cs, 160px) / 2)); }
-.f-cube-face.f-right  { transform: rotateY(90deg)  translateZ(calc(var(--cs, 160px) / 2)); }
-.f-cube-face.f-left   { transform: rotateY(-90deg) translateZ(calc(var(--cs, 160px) / 2)); }
-.f-cube-face.f-top    { transform: rotateX(90deg)  translateZ(calc(var(--cs, 160px) / 2)); }
-.f-cube-face.f-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cs, 160px) / 2)); }
+.f-cube-face.front  { transform: translateZ(calc(var(--csize) / 2)); }
+.f-cube-face.back   { transform: rotateY(180deg) translateZ(calc(var(--csize) / 2)); }
+.f-cube-face.right  { transform: rotateY(90deg) translateZ(calc(var(--csize) / 2)); }
+.f-cube-face.left   { transform: rotateY(-90deg) translateZ(calc(var(--csize) / 2)); }
+.f-cube-face.top    { transform: rotateX(90deg) translateZ(calc(var(--csize) / 2)); }
+.f-cube-face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--csize) / 2)); }
 
-.f-icon:hover .f-cube-face{
-  border-color: rgba(255,255,255,.5);
+/* Тонкая полоска-кант по рёбрам куба */
+.f-cube::before, .f-cube::after{
+  content:'';position:absolute;inset:0;border-radius: inherit;
+  pointer-events:none;
+}
+.f-cube::before{
   box-shadow:
-    inset 0 0 50px rgba(180,170,255,.3),
-    inset 0 1px 0 rgba(255,255,255,.32),
-    0 0 60px rgba(160,150,255,.5);
+    0 0 0 1px rgba(255,255,255,.05),
+    inset 0 0 60px rgba(160,150,255,.10);
+  border-radius: calc(var(--csize) * 0.12);
+  transform: translateZ(calc(var(--csize) * -0.01));
+}
+
+/* Hover состояние — красиво подсвечиваем */
+.f-icon:hover .f-cube-scene{
+  filter:
+    drop-shadow(0 40px 80px rgba(0,0,0,.8))
+    drop-shadow(0 0 90px rgba(180,170,255,.55));
+}
+.f-icon:hover .f-cube-face{
+  border-color: rgba(255,255,255,.42);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.05) 60%, rgba(160,150,255,.12));
 }
 .f-icon:hover .f-cube-face svg{
-  opacity: 1;
-  filter: drop-shadow(0 0 20px rgba(255,255,255,1)) drop-shadow(0 0 40px rgba(180,170,255,.8));
+  opacity:1;
+  transform: scale(1.10);
+  filter: drop-shadow(0 0 16px rgba(255,255,255,.95)) drop-shadow(0 0 40px rgba(160,150,255,.75));
 }
 
-@media (max-width: 1279px){
-  .f-cube{ --cs: calc(var(--size, 160px) * 0.62); }
-  .f-cube-face{ border-radius: calc(var(--cs, 160px) * 0.10); }
-  .f-cube-face svg{
-    width: calc(var(--cs, 160px) * 0.38);
-    height: calc(var(--cs, 160px) * 0.38);
+/* Меньше размер на средних экранах */
+@media (max-width:1279px){
+  .f-cube-scene{
+    --csize: calc(var(--size, 160px) * 0.65);
   }
 }
 
 @media (prefers-reduced-motion: reduce){
-  .f-icon-float,.f-cube{animation:none}
+  .f-icon-float, .f-cube, .f-cube-face::after{animation:none}
 }
 
 /* ============================================================
-   INTRO — CINEMATIC
+   INTRO — элегантный, без вращения лого
    ============================================================ */
 #intro{
   position:fixed;inset:0;z-index:9999;overflow:hidden;
-  background:radial-gradient(ellipse at 50% 0%,#08080f 0%,#04040a 55%,#020205 100%);
-  display:flex;justify-content:center;align-items:center;
-  transition:opacity .9s cubic-bezier(.16,1,.3,1), filter .9s cubic-bezier(.16,1,.3,1);
-}
-#intro.fade-out{opacity:0;filter:blur(24px) scale(1.12);pointer-events:none}
-
-.intro-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;isolation:isolate}
-
-.intro-content{
-  position:relative;z-index:2;
+  background:radial-gradient(ellipse at 50% 35%,#0a0a14 0%,#04040a 55%,#020205 100%);
   display:flex;flex-direction:column;justify-content:center;align-items:center;
-  text-align:center;
-  animation:introIn 1s cubic-bezier(.16,1,.3,1) both;
+  transition:opacity 1s cubic-bezier(.16,1,.3,1), filter 1s cubic-bezier(.16,1,.3,1);
+  perspective: 1200px;
 }
-@keyframes introIn{
-  0%{opacity:0;transform:translateY(30px);filter:blur(20px)}
-  100%{opacity:1;transform:none;filter:none}
+#intro.fade-out{
+  opacity:0;
+  filter:blur(26px) scale(1.10);
+  pointer-events:none;
 }
 
-/* Logo wrap with expanding rings + soft halo — the logo itself DOES NOT move */
+/* Фон интро */
+.intro-bg{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+}
+.intro-bg-glow{
+  position:absolute;border-radius:50%;filter:blur(120px);
+  mix-blend-mode:screen;
+}
+.intro-bg-glow-1{
+  width:70vmax;height:70vmax;top:-20%;left:-20%;
+  background:radial-gradient(circle, rgba(90,110,200,.24), transparent 65%);
+  animation: introGlowA 12s ease-in-out infinite alternate;
+}
+.intro-bg-glow-2{
+  width:60vmax;height:60vmax;bottom:-20%;right:-20%;
+  background:radial-gradient(circle, rgba(150,90,220,.20), transparent 65%);
+  animation: introGlowB 14s ease-in-out infinite alternate;
+}
+@keyframes introGlowA{
+  0%{transform: translate(0,0) scale(1); opacity:.7}
+  100%{transform: translate(80px, 40px) scale(1.15); opacity:1}
+}
+@keyframes introGlowB{
+  0%{transform: translate(0,0) scale(1.05); opacity:.75}
+  100%{transform: translate(-60px, -50px) scale(.95); opacity:1}
+}
+.intro-bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 5%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 5%, transparent 70%);
+  animation: introGridShift 45s linear infinite;
+}
+@keyframes introGridShift{
+  0%{background-position:0 0,0 0}
+  100%{background-position:56px 56px,56px 56px}
+}
+.intro-bg-noise{
+  position:absolute;inset:0;opacity:.045;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.intro-particles{
+  position:absolute;inset:0;overflow:hidden;
+}
+
+.intro-particle{
+  position:absolute;
+  width:3px;height:3px;border-radius:50%;
+  background:#fff;
+  box-shadow: 0 0 8px rgba(255,255,255,.9), 0 0 20px rgba(160,150,255,.7);
+  opacity:0;
+  animation: introParticleFloat linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes introParticleFloat{
+  0%{ opacity:0; transform: translate3d(0,0,0) scale(.5); }
+  15%{ opacity:.9; }
+  50%{ opacity:1; }
+  85%{ opacity:.6; }
+  100%{ opacity:0; transform: translate3d(var(--dx,0), var(--dy,-220px), 0) scale(1.3); }
+}
+
+/* Сцена интро */
+.intro-stage{
+  position:relative;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  z-index:2;
+  transform-style:preserve-3d;
+}
+
+/* Кольца вокруг лого */
+.intro-ring{
+  position:absolute;
+  top:50%;left:50%;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.22);
+  transform: translate(-50%,-50%) scale(.3);
+  opacity:0;
+  pointer-events:none;
+  box-shadow:
+    0 0 24px rgba(160,150,255,.35),
+    inset 0 0 24px rgba(160,150,255,.18);
+}
+.intro-ring-1{
+  width:220px;height:220px;
+  animation: introRingExpand 3.4s cubic-bezier(.16,1,.3,1) .4s infinite;
+}
+.intro-ring-2{
+  width:220px;height:220px;
+  animation: introRingExpand 3.4s cubic-bezier(.16,1,.3,1) 1.2s infinite;
+}
+.intro-ring-3{
+  width:220px;height:220px;
+  animation: introRingExpand 3.4s cubic-bezier(.16,1,.3,1) 2s infinite;
+}
+@keyframes introRingExpand{
+  0%{ transform: translate(-50%,-50%) scale(.55); opacity:0; border-color: rgba(255,255,255,.35); }
+  20%{ opacity:.9; }
+  100%{ transform: translate(-50%,-50%) scale(2.4); opacity:0; border-color: rgba(160,150,255,0); }
+}
+
+/* Логотип */
 .intro-logo-wrap{
-  position: relative;
-  width: 140px;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position:relative;
+  width:120px;height:120px;
+  animation: introLogoAppear 1.4s cubic-bezier(.16,1,.3,1) both;
+  transform-style:preserve-3d;
+}
+@keyframes introLogoAppear{
+  0%{ opacity:0; transform: scale(.4) translateY(30px); filter: blur(20px); }
+  60%{ opacity:1; filter: blur(0); }
+  100%{ opacity:1; transform: scale(1) translateY(0); filter: blur(0); }
 }
 
-.intro-logo-halo{
-  position: absolute;
-  inset: -80px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(170,160,255,.45) 0%, rgba(140,130,220,.15) 35%, transparent 65%);
+.intro-logo-glow{
+  position:absolute;inset:-40%;
+  background: radial-gradient(circle, rgba(180,170,255,.42) 0%, rgba(150,140,255,.15) 40%, transparent 70%);
   filter: blur(28px);
-  animation: haloPulse 3.2s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 0;
+  animation: introLogoGlow 3.5s ease-in-out infinite;
+  pointer-events:none;
 }
-@keyframes haloPulse{
-  0%,100% { transform: scale(1);   opacity: .75; }
-  50%     { transform: scale(1.18); opacity: 1; }
-}
-
-.intro-logo-ring{
-  position: absolute;
-  inset: 0;
-  border-radius: 30px;
-  border: 1px solid rgba(255,255,255,.5);
-  pointer-events: none;
-  animation: ringExpand 3.6s cubic-bezier(.16,1,.3,1) infinite;
-  opacity: 0;
-  z-index: 0;
-}
-.intro-logo-ring.r2{ animation-delay: 1.2s; border-color: rgba(190,180,255,.4); }
-.intro-logo-ring.r3{ animation-delay: 2.4s; border-color: rgba(190,180,255,.28); }
-
-@keyframes ringExpand{
-  0%   { transform: scale(1);   opacity: 0; }
-  15%  { opacity: 1; }
-  100% { transform: scale(2.35); opacity: 0; }
+@keyframes introLogoGlow{
+  0%,100%{ opacity:.7; transform: scale(1); }
+  50%{ opacity:1; transform: scale(1.10); }
 }
 
-/* Second ring set — round for elegance */
-.intro-logo-orbit{
-  position: absolute;
-  inset: -30px;
-  border-radius: 50%;
-  border: 1px dashed rgba(255,255,255,.12);
-  animation: orbitPulse 5s ease-in-out infinite;
-  z-index: 0;
-  pointer-events: none;
-}
-.intro-logo-orbit.o2{
-  inset: -55px;
-  border-color: rgba(180,170,255,.08);
-  animation-delay: 1.4s;
-}
-@keyframes orbitPulse{
-  0%,100%{ transform: scale(1); opacity: .5; }
-  50%    { transform: scale(1.04); opacity: 1; }
-}
-
-/* Static logo — no rotation, no scale, just glow pulse via box-shadow */
 .intro-logo{
-  position: relative;
-  width: 130px;
-  height: 130px;
-  border-radius: 32px;
-  background: linear-gradient(155deg, #ffffff 0%, #eaeaf2 55%, #dcdce8 100%);
-  color: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 52px;
-  letter-spacing: -4px;
-  overflow: hidden;
-  z-index: 1;
-  transform: translateZ(0);
+  position:relative;
+  width:120px;height:120px;
+  border-radius:28px;
+  display:flex;justify-content:center;align-items:center;
+  background:
+    linear-gradient(145deg, #ffffff 0%, #f2f0ff 60%, #ded9ff 100%);
+  color:#000;
+  font-weight:800;
+  font-size:48px;
+  letter-spacing:-4px;
+  overflow:hidden;
   box-shadow:
     0 0 60px rgba(255,255,255,.55),
-    0 0 130px rgba(170,150,255,.45),
-    0 0 220px rgba(140,130,255,.25),
-    inset 0 2px 0 rgba(255,255,255,.95),
-    inset 0 -2px 0 rgba(0,0,0,.06);
-  animation: logoGlowOnly 2.8s ease-in-out infinite;
-  /* NO rotation, NO translation — the logo stands perfectly still */
+    0 0 120px rgba(160,150,255,.45),
+    0 20px 60px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.9);
 }
-@keyframes logoGlowOnly{
-  0%,100% {
-    box-shadow:
-      0 0 60px rgba(255,255,255,.55),
-      0 0 130px rgba(170,150,255,.45),
-      0 0 220px rgba(140,130,255,.25),
-      inset 0 2px 0 rgba(255,255,255,.95),
-      inset 0 -2px 0 rgba(0,0,0,.06);
-  }
-  50% {
-    box-shadow:
-      0 0 95px rgba(255,255,255,.95),
-      0 0 190px rgba(170,150,255,.7),
-      0 0 300px rgba(140,130,255,.45),
-      inset 0 2px 0 rgba(255,255,255,.95),
-      inset 0 -2px 0 rgba(0,0,0,.06);
-  }
+
+/* Блик на лого */
+.intro-logo::before{
+  content:'';position:absolute;
+  top:0;left:-60%;bottom:0;width:40%;
+  background: linear-gradient(115deg,
+    transparent 0%,
+    rgba(255,255,255,0) 20%,
+    rgba(255,255,255,.85) 50%,
+    rgba(255,255,255,0) 80%,
+    transparent 100%);
+  transform: skewX(-22deg);
+  animation: introLogoShine 2.6s ease-in-out .8s infinite;
+  mix-blend-mode: screen;
+  pointer-events:none;
+}
+@keyframes introLogoShine{
+  0%{ left:-60%; opacity:0; }
+  20%{ opacity:1; }
+  60%{ left:130%; opacity:1; }
+  61%{ opacity:0; }
+  100%{ left:130%; opacity:0; }
+}
+
+/* Мягкое мерцание внутри */
+.intro-logo::after{
+  content:'';position:absolute;inset:0;
+  background: radial-gradient(circle at 50% 120%, rgba(160,150,255,.35), transparent 60%);
+  pointer-events:none;
 }
 
 .intro-logo-text{
-  position: relative;
-  z-index: 3;
-  transform: translateZ(0);
-  background: linear-gradient(180deg, #000 0%, #1c1c28 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  position:relative;
+  z-index:2;
+  display:inline-flex;
+  gap:0;
+}
+.intro-logo-text span{
+  display:inline-block;
+  animation: introLetterFloat 4s ease-in-out infinite;
+}
+.intro-logo-text span:last-child{
+  animation-delay: .8s;
+}
+@keyframes introLetterFloat{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-3px); }
 }
 
-.intro-logo-sheen{
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,.95) 50%, transparent 58%);
-  transform: translateX(-140%) skewX(-18deg);
-  animation: sheenSweep 3.2s cubic-bezier(.6,.05,.2,.95) infinite;
-  pointer-events: none;
-  z-index: 2;
-  mix-blend-mode: overlay;
-}
-@keyframes sheenSweep{
-  0%        { transform: translateX(-140%) skewX(-18deg); }
-  45%,100%  { transform: translateX(140%) skewX(-18deg); }
-}
-
-/* Letters reveal — staggered */
+/* Заголовок SCALECORE — буквы появляются снизу */
 .intro-title{
-  margin-top: 42px;
-  display: flex;
-  gap: 6px;
-  perspective: 800px;
+  margin-top:44px;
+  display:flex;
+  gap:.05em;
+  font-size:clamp(22px, 3.2vw, 34px);
+  font-weight:800;
+  letter-spacing:.42em;
+  color:#fff;
+  text-transform:uppercase;
+  text-shadow:
+    0 0 24px rgba(255,255,255,.35),
+    0 0 60px rgba(160,150,255,.35);
+  padding-left:.42em;
 }
 .intro-title span{
-  display: inline-block;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 0;
-  color: #fff;
-  text-transform: uppercase;
-  opacity: 0;
-  transform: translateY(24px) rotateX(90deg);
-  animation: letterIn .85s cubic-bezier(.34,1.4,.5,1) forwards;
-  transform-origin: bottom center;
-  text-shadow: 0 0 20px rgba(255,255,255,.35), 0 0 40px rgba(170,160,255,.25);
+  display:inline-block;
+  opacity:0;
+  transform: translateY(28px) rotateX(-40deg);
+  animation: introLetterIn .9s cubic-bezier(.16,1,.3,1) forwards;
+  transform-origin:50% 100%;
 }
-.intro-title span:nth-child(1){animation-delay:.55s}
-.intro-title span:nth-child(2){animation-delay:.65s}
-.intro-title span:nth-child(3){animation-delay:.75s}
-.intro-title span:nth-child(4){animation-delay:.85s}
-.intro-title span:nth-child(5){animation-delay:.95s}
-.intro-title span:nth-child(6){animation-delay:1.05s}
-.intro-title span:nth-child(7){animation-delay:1.15s}
-.intro-title span:nth-child(8){animation-delay:1.25s}
-.intro-title span:nth-child(9){animation-delay:1.35s}
-
-@keyframes letterIn{
-  0%   { opacity: 0; transform: translateY(24px) rotateX(90deg); filter: blur(8px); }
-  100% { opacity: 1; transform: translateY(0) rotateX(0); filter: none; }
+@keyframes introLetterIn{
+  0%{ opacity:0; transform: translateY(28px) rotateX(-40deg); filter: blur(6px); }
+  60%{ opacity:1; filter: blur(0); }
+  100%{ opacity:1; transform: translateY(0) rotateX(0); filter: blur(0); }
 }
 
+/* Подзаголовок */
 .intro-sub{
-  margin-top: 16px;
-  font-size: 10px;
-  letter-spacing: 6px;
-  color: #6a6a75;
-  text-transform: uppercase;
-  font-weight: 600;
-  opacity: 0;
-  animation: subIn 1s cubic-bezier(.16,1,.3,1) 1.6s forwards;
+  margin-top:18px;
+  font-size:10.5px;
+  letter-spacing:.55em;
+  color:#7d7d8c;
+  text-transform:uppercase;
+  opacity:0;
+  transform: translateY(10px);
+  animation: introSubIn .9s cubic-bezier(.16,1,.3,1) 2.05s forwards;
+  padding-left:.55em;
+  text-align:center;
 }
-@keyframes subIn{
-  0%{opacity:0;letter-spacing:12px;filter:blur(6px)}
-  100%{opacity:1;letter-spacing:6px;filter:none}
+@keyframes introSubIn{
+  from{ opacity:0; transform: translateY(10px); }
+  to{ opacity:.9; transform: translateY(0); }
 }
 
-/* Loading progress */
+/* Прогресс */
 .intro-progress{
-  position: absolute;
-  bottom: 62px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 220px;
-  height: 2px;
+  margin-top:44px;
+  width:min(280px, 60vw);
+  height:2px;
+  border-radius:2px;
   background: rgba(255,255,255,.08);
-  border-radius: 2px;
-  overflow: hidden;
-  z-index: 3;
+  overflow:hidden;
+  position:relative;
+  opacity:0;
+  animation: introSubIn .6s ease 2.3s forwards;
 }
 .intro-progress-bar{
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, rgba(255,255,255,.15), #fff, rgba(255,255,255,.15));
-  box-shadow: 0 0 14px rgba(255,255,255,.8), 0 0 30px rgba(170,160,255,.5);
-  border-radius: 2px;
-  animation: progressFill 2.4s cubic-bezier(.4,0,.2,1) .2s forwards;
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, rgba(255,255,255,.2), #fff 50%, rgba(180,170,255,.9));
+  box-shadow: 0 0 12px rgba(255,255,255,.8), 0 0 26px rgba(160,150,255,.6);
+  animation: introProgressFill 2.6s cubic-bezier(.16,1,.3,1) 2.35s forwards;
 }
-@keyframes progressFill{
-  0% { width: 0; }
-  100% { width: 100%; }
-}
-
-/* Decorative corner brackets */
-.intro-corners{
-  position: absolute;
-  inset: 34px;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0;
-  animation: cornersIn 1.2s cubic-bezier(.16,1,.3,1) .4s forwards;
-}
-@keyframes cornersIn{
-  to { opacity: 1; }
-}
-.intro-corners span{
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(255,255,255,.22);
-  animation: cornerPulse 3s ease-in-out infinite;
-}
-@keyframes cornerPulse{
-  0%,100%{ border-color: rgba(255,255,255,.14); }
-  50%    { border-color: rgba(255,255,255,.4); }
-}
-.intro-corners span:nth-child(1){ top: 0;    left: 0;    border-right: none;  border-bottom: none; }
-.intro-corners span:nth-child(2){ top: 0;    right: 0;   border-left: none;   border-bottom: none; animation-delay: .4s; }
-.intro-corners span:nth-child(3){ bottom: 0; left: 0;    border-right: none;  border-top: none;    animation-delay: .8s; }
-.intro-corners span:nth-child(4){ bottom: 0; right: 0;   border-left: none;   border-top: none;    animation-delay: 1.2s; }
-
-/* Star field twinkle in intro */
-.intro-stars{
-  position: absolute; inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,.55), transparent),
-    radial-gradient(1px 1px at 88% 34%, rgba(255,255,255,.4), transparent),
-    radial-gradient(1.5px 1.5px at 34% 78%, rgba(255,255,255,.45), transparent),
-    radial-gradient(1px 1px at 68% 12%, rgba(255,255,255,.35), transparent),
-    radial-gradient(1px 1px at 22% 62%, rgba(255,255,255,.5), transparent),
-    radial-gradient(1.5px 1.5px at 78% 82%, rgba(255,255,255,.32), transparent),
-    radial-gradient(1px 1px at 52% 48%, rgba(255,255,255,.4), transparent);
-  background-size: 100% 100%;
-  animation: twinkle 6s ease-in-out infinite alternate;
-  pointer-events: none;
-  opacity: .7;
+@keyframes introProgressFill{
+  from{ width:0%; }
+  to{ width:100%; }
 }
 
-#flash{position:fixed;inset:0;background:#fff;z-index:10000;opacity:0;pointer-events:none;transition:opacity .5s ease-out}
+/* Тонкая световая полоска сверху и снизу */
+.intro-frame{
+  position:absolute;left:0;right:0;height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  opacity:0;
+  animation: introFrameIn 1s ease 1.2s forwards;
+}
+.intro-frame.top{ top:6%; }
+.intro-frame.bottom{ bottom:6%; }
+@keyframes introFrameIn{ to{ opacity:.55; } }
+
+#flash{
+  position:fixed;inset:0;background:#fff;z-index:10000;opacity:0;pointer-events:none;
+  transition:opacity .55s ease-out;
+}
 
 /* ============================================================
    HEADER
@@ -707,20 +709,26 @@ header::before{
   transition:transform .5s var(--ease-spring), box-shadow .4s;
   box-shadow:0 0 0 rgba(255,255,255,0);
   position:relative;
-  overflow:hidden;
 }
 .logo-mark::after{
-  content:'';
-  position:absolute;inset:0;
-  background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.9) 50%,transparent 60%);
-  transform:translateX(-140%);
-  transition:transform .8s var(--ease);
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.9) 50%, transparent 70%);
+  background-size:250% 100%;
+  background-position:200% 0;
+  mix-blend-mode:screen;
+  opacity:0;
+  transition: opacity .3s;
+  pointer-events:none;
+}
+.logo:hover .logo-mark::after{ opacity:1; animation: logoMarkShine 1.2s ease forwards; }
+@keyframes logoMarkShine{
+  0%{ background-position:200% 0; }
+  100%{ background-position:-100% 0; }
 }
 .logo:hover .logo-mark{
   transform:rotate(-8deg) scale(1.08);
   box-shadow:0 0 24px rgba(255,255,255,.5);
 }
-.logo:hover .logo-mark::after{transform:translateX(140%)}
 .header-actions{display:flex;gap:10px;align-items:center}
 
 /* ============================================================
@@ -789,6 +797,20 @@ main{position:relative;z-index:2}
   background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin-bottom:20px;
   backdrop-filter:blur(10px);
   transition:all .4s var(--ease);
+  position:relative;
+  overflow:hidden;
+}
+.section-label::before{
+  content:'';position:absolute;inset:0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.25) 50%, transparent 70%);
+  background-size:250% 100%;
+  background-position:200% 0;
+  animation: labelShine 5s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes labelShine{
+  0%,100%{ background-position:200% 0; }
+  50%{ background-position:-100% 0; }
 }
 .section-label:hover{color:#fff;border-color:rgba(255,255,255,.25);letter-spacing:4px}
 .section-title{
@@ -1608,10 +1630,6 @@ input[type="number"]{-moz-appearance:textfield}
   .order-wrap{padding:24px 16px}
   .budget-options{grid-template-columns:repeat(2,1fr)}
   .budget-chip{padding:13px 6px;font-size:11.5px}
-  .intro-logo{width:110px;height:110px;font-size:44px;border-radius:26px}
-  .intro-logo-wrap{width:120px;height:120px}
-  .intro-title span{font-size:16px}
-  .intro-corners{inset:18px}
 }
 @media (max-height:640px){
   .page{padding-top:96px}
@@ -1629,25 +1647,8 @@ input[type="number"]{-moz-appearance:textfield}
 /* ============================================================
    ANIMATIONS
    ============================================================ */
-@keyframes ringSpin{to{transform:rotate(360deg)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-
-/* Shimmer on section-title */
-.section-title::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(110deg,transparent 40%,rgba(255,255,255,.25) 50%,transparent 60%);
-  background-size:250% 100%;
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-  pointer-events:none;
-  animation:titleShimmer 8s linear infinite;
-  mix-blend-mode:overlay;
-}
-@keyframes titleShimmer{
-  0%{background-position:200% 0}
-  100%{background-position:-200% 0}
-}
+@keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -1673,130 +1674,150 @@ input[type="number"]{-moz-appearance:textfield}
 
 <div id="intro">
   <div class="intro-bg">
-    <div class="bg-flow"></div>
-    <div class="bg-conic"></div>
-    <div class="bg-topglow"></div>
-    <div class="bg-grid"></div>
-    <div class="intro-stars"></div>
-    <div class="bg-vignette"></div>
-    <div class="bg-noise"></div>
+    <div class="intro-bg-glow intro-bg-glow-1"></div>
+    <div class="intro-bg-glow intro-bg-glow-2"></div>
+    <div class="intro-bg-grid"></div>
+    <div class="intro-particles" id="intro-particles"></div>
+    <div class="intro-bg-noise"></div>
   </div>
-  <div class="intro-corners">
-    <span></span><span></span><span></span><span></span>
-  </div>
-  <div class="intro-content">
+  <div class="intro-frame top"></div>
+  <div class="intro-frame bottom"></div>
+  <div class="intro-stage">
+    <div class="intro-ring intro-ring-1"></div>
+    <div class="intro-ring intro-ring-2"></div>
+    <div class="intro-ring intro-ring-3"></div>
     <div class="intro-logo-wrap">
-      <div class="intro-logo-halo"></div>
-      <div class="intro-logo-orbit"></div>
-      <div class="intro-logo-orbit o2"></div>
-      <div class="intro-logo-ring r1"></div>
-      <div class="intro-logo-ring r2"></div>
-      <div class="intro-logo-ring r3"></div>
+      <div class="intro-logo-glow"></div>
       <div class="intro-logo">
-        <span class="intro-logo-text">SC</span>
-        <div class="intro-logo-sheen"></div>
+        <span class="intro-logo-text"><span>S</span><span>C</span></span>
       </div>
     </div>
     <div class="intro-title">
-      <span>S</span><span>C</span><span>A</span><span>L</span><span>E</span><span>C</span><span>O</span><span>R</span><span>E</span>
+      <span style="animation-delay:1.05s">S</span>
+      <span style="animation-delay:1.15s">C</span>
+      <span style="animation-delay:1.25s">A</span>
+      <span style="animation-delay:1.35s">L</span>
+      <span style="animation-delay:1.45s">E</span>
+      <span style="animation-delay:1.55s">C</span>
+      <span style="animation-delay:1.65s">O</span>
+      <span style="animation-delay:1.75s">R</span>
+      <span style="animation-delay:1.85s">E</span>
     </div>
-    <div class="intro-sub">СИСТЕМА ПРОДАЖ ДЛЯ БИЗНЕСА</div>
+    <div class="intro-sub">Система продаж для бизнеса</div>
+    <div class="intro-progress"><div class="intro-progress-bar"></div></div>
   </div>
-  <div class="intro-progress"><div class="intro-progress-bar"></div></div>
 </div>
 
 <div id="toast-container"></div>
 
-<!-- ============ FLOATING SIDE 3D CUBES ============ -->
+<!-- ============ FLOATING 3D CUBES ============ -->
 <div class="float-icons" id="float-icons" aria-hidden="true">
 
-  <!-- ===================== ЛЕВЫЙ КЛАСТЕР ===================== -->
+  <!-- ЛЕВЫЙ КЛАСТЕР -->
   <div class="f-icon" data-side="left" data-depth="0.85"
-       style="--x:-55px;--y:8%;--size:220px;--z:1;--anim:iconFloatA;--dur:9s;--delay:-1s;--exit-delay:0s;--spin-dur:22s;">
+       style="--x:-55px;--y:8%;--size:200px;--z:1;--anim:iconFloatA;--dur:9s;--delay:-1s;--exit-delay:0s;--spin:24s;--spin-delay:-3s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
-          </svg>
+        <div class="f-cube-scene">
+          <div class="f-cube">
+            <div class="f-cube-face front"></div>
+            <div class="f-cube-face back"></div>
+            <div class="f-cube-face right"></div>
+            <div class="f-cube-face left"></div>
+            <div class="f-cube-face top"></div>
+            <div class="f-cube-face bottom"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="f-icon" data-side="left" data-depth="1.2"
-       style="--x:-110px;--y:18%;--size:380px;--z:2;--anim:iconFloatB;--dur:11s;--delay:-2.5s;--exit-delay:.07s;--spin-dur:28s;">
+       style="--x:-110px;--y:18%;--size:340px;--z:2;--anim:iconFloatB;--dur:11s;--delay:-2.5s;--exit-delay:.07s;--spin:28s;--spin-delay:-8s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="7" rx="2"/>
-            <rect x="2" y="14" width="20" height="7" rx="2"/>
-            <line x1="6" y1="6.5" x2="6.01" y2="6.5"/>
-            <line x1="6" y1="17.5" x2="6.01" y2="17.5"/>
-          </svg>
+        <div class="f-cube-scene">
+          <div class="f-cube">
+            <div class="f-cube-face front"></div>
+            <div class="f-cube-face back"></div>
+            <div class="f-cube-face right"></div>
+            <div class="f-cube-face left"></div>
+            <div class="f-cube-face top"></div>
+            <div class="f-cube-face bottom"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="f-icon" data-side="left" data-depth="1.0"
-       style="--x:-42px;--y:50%;--size:260px;--z:3;--anim:iconFloatC;--dur:10s;--delay:-3s;--exit-delay:.14s;--spin-dur:30s;">
+       style="--x:-42px;--y:50%;--size:240px;--z:3;--anim:iconFloatC;--dur:10s;--delay:-3s;--exit-delay:.14s;--spin:22s;--spin-delay:-5s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="18" rx="2.5"/>
-            <polyline points="7 8.5 10 11.5 7 14.5"/>
-            <line x1="12" y1="14.5" x2="17" y2="14.5"/>
-          </svg>
+        <div class="f-cube-scene">
+          <div class="f-cube">
+            <div class="f-cube-face front"></div>
+            <div class="f-cube-face back"></div>
+            <div class="f-cube-face right"></div>
+            <div class="f-cube-face left"></div>
+            <div class="f-cube-face top"></div>
+            <div class="f-cube-face bottom"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===================== ПРАВЫЙ КЛАСТЕР ===================== -->
+  <!-- ПРАВЫЙ КЛАСТЕР -->
   <div class="f-icon" data-side="right" data-depth="0.85"
-       style="--x:-55px;--y:9%;--size:220px;--z:1;--anim:iconFloatE;--dur:9.5s;--delay:-1.5s;--exit-delay:.04s;--spin-dur:24s;">
+       style="--x:-55px;--y:9%;--size:200px;--z:1;--anim:iconFloatE;--dur:9.5s;--delay:-1.5s;--exit-delay:.04s;--spin:26s;--spin-delay:-6s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 18 22 12 16 6"/>
-            <polyline points="8 6 2 12 8 18"/>
-          </svg>
+        <div class="f-cube-scene">
+          <div class="f-cube">
+            <div class="f-cube-face front"></div>
+            <div class="f-cube-face back"></div>
+            <div class="f-cube-face right"></div>
+            <div class="f-cube-face left"></div>
+            <div class="f-cube-face top"></div>
+            <div class="f-cube-face bottom"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="f-icon" data-side="right" data-depth="1.2"
-       style="--x:-110px;--y:19%;--size:380px;--z:2;--anim:iconFloatF;--dur:10.5s;--delay:-2s;--exit-delay:.11s;--spin-dur:32s;">
+       style="--x:-110px;--y:19%;--size:340px;--z:2;--anim:iconFloatF;--dur:10.5s;--delay:-2s;--exit-delay:.11s;--spin:30s;--spin-delay:-10s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 17h14"/>
-            <path d="M6 17V9.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 18 9.5V17"/>
-            <path d="M9 8V6h6v2"/>
-            <circle cx="8" cy="18" r="1.5"/>
-            <circle cx="16" cy="18" r="1.5"/>
-          </svg>
+        <div class="f-cube-scene">
+          <div class="f-cube">
+            <div class="f-cube-face front"></div>
+            <div class="f-cube-face back"></div>
+            <div class="f-cube-face right"></div>
+            <div class="f-cube-face left"></div>
+            <div class="f-cube-face top"></div>
+            <div class="f-cube-face bottom"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="f-icon" data-side="right" data-depth="1.0"
-       style="--x:-42px;--y:52%;--size:260px;--z:3;--anim:iconFloatD;--dur:11s;--delay:-3.5s;--exit-delay:.18s;--spin-dur:26s;">
+       style="--x:-42px;--y:52%;--size:240px;--z:3;--anim:iconFloatD;--dur:11s;--delay:-3.5s;--exit-delay:.18s;--spin:24s;--spin-delay:-2s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <ellipse cx="12" cy="5" rx="8" ry="3"/>
-            <path d="M20 12c0 1.66-3.58 3-8 3s-8-1.34-8-3"/>
-            <path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>
-          </svg>
+        <div class="f-cube-scene">
+          <div class="f-cube">
+            <div class="f-cube-face front"></div>
+            <div class="f-cube-face back"></div>
+            <div class="f-cube-face right"></div>
+            <div class="f-cube-face left"></div>
+            <div class="f-cube-face top"></div>
+            <div class="f-cube-face bottom"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1854,6 +1875,7 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
     <div class="catalog-grid" id="catalog-grid"></div>
 
+    
     <div class="extended-services">
       <div class="section-head" style="margin-bottom:48px">
         <div class="section-label reveal">Услуги и цены</div>
@@ -2101,43 +2123,31 @@ const PRICING = [
 ];
 
 /* ============================================================
-   BUILD 3D CUBES FROM .f-icon-card
+   ICON SVG для кубов (одна иконка на все грани)
    ============================================================ */
-function buildCubes(){
-  document.querySelectorAll('.f-icon-card').forEach(card => {
-    const svg = card.querySelector('svg');
-    if (!svg) return;
-    const svgHTML = svg.outerHTML;
-    card.className = 'f-cube';
-    card.innerHTML = '';
-    const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
-    faces.forEach(f => {
-      const face = document.createElement('div');
-      face.className = 'f-cube-face f-' + f;
-      face.innerHTML = svgHTML;
-      card.appendChild(face);
-    });
-  });
-}
+const CUBE_ICONS = [
+  // left cluster
+  '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
+  '<rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><line x1="6" y1="6.5" x2="6.01" y2="6.5"/><line x1="6" y1="17.5" x2="6.01" y2="17.5"/>',
+  '<rect x="2" y="3" width="20" height="18" rx="2.5"/><polyline points="7 8.5 10 11.5 7 14.5"/><line x1="12" y1="14.5" x2="17" y2="14.5"/>',
+  // right cluster
+  '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  '<path d="M5 17h14"/><path d="M6 17V9.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 18 9.5V17"/><path d="M9 8V6h6v2"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/>',
+  '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M20 12c0 1.66-3.58 3-8 3s-8-1.34-8-3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>'
+];
 
 /* ============================================================
-   BUILD FLOATING PARTICLES
+   Инициализация кубов — заполняем иконками все грани
    ============================================================ */
-function buildParticles(){
-  const c = document.getElementById('bg-particles');
-  if (!c) return;
-  const count = window.innerWidth < 700 ? 10 : 22;
-  for (let i = 0; i < count; i++) {
-    const s = document.createElement('span');
-    const size = 1 + Math.random() * 2.2;
-    s.style.width = size + 'px';
-    s.style.height = size + 'px';
-    s.style.left = Math.random() * 100 + '%';
-    s.style.bottom = '-10px';
-    s.style.animationDuration = (12 + Math.random() * 22) + 's';
-    s.style.animationDelay = (-Math.random() * 30) + 's';
-    c.appendChild(s);
-  }
+function initCubes(){
+  const cubes = document.querySelectorAll('.f-icon');
+  cubes.forEach((cubeEl, idx) => {
+    const iconSvg = CUBE_ICONS[idx % CUBE_ICONS.length];
+    const faces = cubeEl.querySelectorAll('.f-cube-face');
+    faces.forEach(face => {
+      face.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${iconSvg}</svg>`;
+    });
+  });
 }
 
 /* ============================================================
@@ -2146,8 +2156,9 @@ function buildParticles(){
 window.addEventListener('load', () => {
   document.body.classList.add('home-page');
 
-  buildCubes();
-  buildParticles();
+  initCubes();
+  initIntroParticles();
+  initBgParticles();
 
   setTimeout(() => {
     const intro = document.getElementById('intro');
@@ -2157,14 +2168,14 @@ window.addEventListener('load', () => {
       setTimeout(() => {
         intro.style.display = 'none';
         intro.style.visibility = 'hidden';
-      }, 900);
+      }, 1000);
     }
     if (flash) {
       flash.style.opacity = '1';
-      setTimeout(() => { flash.style.opacity = '0'; }, 300);
+      setTimeout(() => { flash.style.opacity = '0'; }, 280);
     }
     activateReveal(document.getElementById('page-home'));
-  }, 2600);
+  }, 5000);
 
   setTimeout(() => {
     const intro = document.getElementById('intro');
@@ -2172,8 +2183,9 @@ window.addEventListener('load', () => {
       intro.classList.add('fade-out');
       intro.style.display = 'none';
       intro.style.visibility = 'hidden';
+      activateReveal(document.getElementById('page-home'));
     }
-  }, 4600);
+  }, 7200);
 
   renderCatalog();
   renderExtendedServices();
@@ -2190,6 +2202,50 @@ window.addEventListener('load', () => {
   initCounters();
   initFloatIcons();
 });
+
+/* ============================================================
+   INTRO particles
+   ============================================================ */
+function initIntroParticles(){
+  const c = document.getElementById('intro-particles');
+  if (!c) return;
+  const N = 60;
+  for (let i=0; i<N; i++){
+    const p = document.createElement('div');
+    p.className = 'intro-particle';
+    const size = Math.random()*2.6 + 1.2;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random()*100 + '%';
+    p.style.top = (Math.random()*100) + '%';
+    p.style.animationDuration = (5 + Math.random()*7) + 's';
+    p.style.animationDelay = (Math.random()*6) + 's';
+    p.style.setProperty('--dx', (Math.random()*120 - 60) + 'px');
+    p.style.setProperty('--dy', (-150 - Math.random()*300) + 'px');
+    c.appendChild(p);
+  }
+}
+
+/* ============================================================
+   BG particles (persistent)
+   ============================================================ */
+function initBgParticles(){
+  const c = document.getElementById('bg-particles');
+  if (!c) return;
+  const N = 40;
+  for (let i=0; i<N; i++){
+    const p = document.createElement('div');
+    p.className = 'bg-particle';
+    const size = Math.random()*2 + 1;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random()*100 + '%';
+    p.style.bottom = (Math.random()*30) + '%';
+    p.style.animationDuration = (14 + Math.random()*20) + 's';
+    p.style.animationDelay = (-Math.random()*20) + 's';
+    c.appendChild(p);
+  }
+}
 
 /* ============================================================
    NAV
@@ -2308,10 +2364,7 @@ function orderExtendedService(id){
     }
     const ta = document.querySelector('#order-form textarea[name="description"]');
     if (ta) {
-      const includes = s.includes.replace(/<br>/g, ', ');
-      const price = s.price.replace(/<br>/g, ' / ');
-      const duration = s.duration.replace(/<br>/g, ' / ');
-      ta.value = `Интересует услуга: ${s.title}.\n\n${s.question}\n\nЧто входит: ${includes}\nРезультат: ${s.result}\nСтоимость: ${price}\nСрок: ${duration}`;
+      ta.value = `Интересует услуга: ${s.title}.\n\n${s.question}\n\nЧто входит: ${s.includes}\nРезультат: ${s.result}\nСтоимость: ${s.price}\nСрок: ${s.duration}`;
     }
   }, 500);
 }

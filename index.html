@@ -18,6 +18,9 @@
 --r-sm:14px;
 --ease:cubic-bezier(.16,1,.3,1);
 --ease-spring:cubic-bezier(.34,1.4,.5,1);
+--accent1:#a89bff;
+--accent2:#7ec5ff;
+--accent3:#ff9ecb;
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:var(--font);-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
@@ -39,10 +42,16 @@ button,input,textarea,select{font-family:inherit}
 }
 .scroll-progress-bar{
   height:100%;width:0;
-  background:linear-gradient(90deg,transparent,#fff,transparent);
-  box-shadow:0 0 14px rgba(255,255,255,.7),0 0 30px rgba(160,150,255,.4);
+  background:linear-gradient(90deg,transparent,#fff,#a89bff,#fff,transparent);
+  box-shadow:0 0 14px rgba(255,255,255,.7),0 0 30px rgba(160,150,255,.6);
   transition:width .08s linear;
   border-radius:0 2px 2px 0;
+  background-size:200% 100%;
+  animation:progressShimmer 3s linear infinite;
+}
+@keyframes progressShimmer{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
 }
 
 /* ============================================================
@@ -50,7 +59,7 @@ button,input,textarea,select{font-family:inherit}
    ============================================================ */
 .cursor-glow{
   position:fixed;width:560px;height:560px;border-radius:50%;
-  background:radial-gradient(circle,rgba(130,140,225,.09) 0%,rgba(130,140,225,.03) 35%,transparent 65%);
+  background:radial-gradient(circle,rgba(130,140,225,.10) 0%,rgba(130,140,225,.035) 35%,transparent 65%);
   pointer-events:none;z-index:1;
   transform:translate(-50%,-50%);
   left:-1000px;top:-1000px;
@@ -60,6 +69,19 @@ button,input,textarea,select{font-family:inherit}
 }
 body:hover .cursor-glow{opacity:1}
 @media (max-width:900px){.cursor-glow{display:none}}
+
+/* ============================================================
+   CURSOR DOT TRAIL
+   ============================================================ */
+.cursor-dot{
+  position:fixed;width:6px;height:6px;border-radius:50%;
+  background:#fff;pointer-events:none;z-index:2;
+  left:-100px;top:-100px;
+  box-shadow:0 0 12px rgba(255,255,255,.9),0 0 24px rgba(160,150,255,.6);
+  mix-blend-mode:screen;
+  transition:transform .15s ease-out;
+}
+@media (max-width:900px){.cursor-dot{display:none}}
 
 /* ============================================================
    ФОН
@@ -189,12 +211,18 @@ body:hover .cursor-glow{opacity:1}
 }
 @keyframes twinkle{0%{opacity:.35}50%{opacity:.75}100%{opacity:.5}}
 
+#bg-particles{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:.9;
+  mix-blend-mode:screen;
+}
+
 @media (prefers-reduced-motion: reduce){
   .bg-flow,.bg-conic,.bg-topglow,.bg-orb,.bg-grid,.bg-stars{animation:none}
 }
 
 /* ============================================================
-   FLOATING SIDE ICONS
+   FLOATING 3D CUBES
    ============================================================ */
 .float-icons{
   position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -232,6 +260,7 @@ body:not(.home-page) .f-icon[data-side="right"]{
   animation: var(--anim, iconFloatA) var(--dur, 9s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
   will-change: transform;
+  perspective: 1000px;
 }
 
 @keyframes iconFloatA{
@@ -267,150 +296,289 @@ body:not(.home-page) .f-icon[data-side="right"]{
   65%{transform:rotate(calc(var(--rot,0deg) - 2deg)) translate(10px,-6px)}
 }
 
-.f-icon-card{
-  position:relative;
+/* ============================
+   3D CUBE
+   ============================ */
+.f-cube-wrap{
+  position: relative;
   width: var(--size, 160px);
   height: var(--size, 160px);
-  border-radius: calc(var(--size, 160px) * 0.22);
-  background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.015));
-  border:1px solid rgba(255,255,255,.15);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  display:flex;align-items:center;justify-content:center;
-  pointer-events:auto;cursor:pointer;
-  transition:transform .7s cubic-bezier(.34,1.4,.5,1), border-color .5s, background .5s, filter .5s;
+  transform-style: preserve-3d;
+  pointer-events: auto;
+  cursor: pointer;
   filter:
-    drop-shadow(0 24px 45px rgba(0,0,0,.60))
-    drop-shadow(0 0 30px rgba(140,130,255,.14));
-  will-change:transform,filter;
+    drop-shadow(0 30px 45px rgba(0,0,0,.55))
+    drop-shadow(0 0 40px rgba(140,130,255,.25));
+  transition: filter .5s ease;
 }
-
-.f-icon[data-side="left"] .f-icon-card{
-  -webkit-mask-image:linear-gradient(to right,
-    transparent 0%,
-    rgba(0,0,0,.10) 10%,
-    rgba(0,0,0,.45) 28%,
-    #000 46%,
-    #000 100%);
-  mask-image:linear-gradient(to right,
-    transparent 0%,
-    rgba(0,0,0,.10) 10%,
-    rgba(0,0,0,.45) 28%,
-    #000 46%,
-    #000 100%);
-}
-.f-icon[data-side="right"] .f-icon-card{
-  -webkit-mask-image:linear-gradient(to left,
-    transparent 0%,
-    rgba(0,0,0,.10) 10%,
-    rgba(0,0,0,.45) 28%,
-    #000 46%,
-    #000 100%);
-  mask-image:linear-gradient(to left,
-    transparent 0%,
-    rgba(0,0,0,.10) 10%,
-    rgba(0,0,0,.45) 28%,
-    #000 46%,
-    #000 100%);
-}
-
-.f-icon-card::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;
-  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.22),transparent 62%);
-  opacity:.55;pointer-events:none;transition:opacity .5s;
-}
-.f-icon-card::after{
-  content:'';position:absolute;inset:-1px;border-radius:inherit;
-  background:linear-gradient(135deg,rgba(255,255,255,.38),transparent 40%,transparent 60%,rgba(160,150,255,.28));
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-  padding:1px;pointer-events:none;opacity:.65;transition:opacity .5s;
-}
-.f-icon-card svg{
-  width: calc(var(--size, 160px) * 0.38);
-  height: calc(var(--size, 160px) * 0.38);
-  color:#fff;opacity:.85;
-  position:relative;z-index:1;
-  transition:opacity .5s, filter .5s, transform .6s cubic-bezier(.34,1.4,.5,1);
-}
-
-.f-icon-card:hover{
-  transform:scale(1.10) rotate(-2deg);
-  border-color:rgba(255,255,255,.55);
-  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.05));
+.f-cube-wrap:hover{
   filter:
-    drop-shadow(0 32px 60px rgba(0,0,0,.78))
-    drop-shadow(0 0 55px rgba(160,150,255,.55));
+    drop-shadow(0 40px 60px rgba(0,0,0,.65))
+    drop-shadow(0 0 70px rgba(160,150,255,.6));
 }
-.f-icon-card:hover::before{opacity:1}
-.f-icon-card:hover::after{opacity:1}
-.f-icon-card:hover svg{
-  opacity:1;
-  filter:drop-shadow(0 0 16px rgba(255,255,255,.8));
-  transform:scale(1.06);
+
+.f-cube{
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: cubeSpin var(--spin-dur, 22s) linear infinite;
+  animation-direction: var(--spin-dir, normal);
+  will-change: transform;
 }
+
+@keyframes cubeSpin{
+  0%   { transform: rotateX(-18deg) rotateY(0deg); }
+  100% { transform: rotateX(-18deg) rotateY(360deg); }
+}
+
+.f-cube-face{
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255,255,255,.22);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.012)),
+    radial-gradient(circle at 30% 30%, rgba(180,170,255,.14), transparent 65%);
+  border-radius: calc(var(--size, 160px) * 0.07);
+  box-shadow:
+    inset 0 0 40px rgba(160,150,255,.12),
+    inset 0 0 90px rgba(140,130,255,.05),
+    0 0 0 1px rgba(180,170,255,.05);
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+.f-cube-face.f-front  { transform: translateZ(calc(var(--size, 160px) / 2)); }
+.f-cube-face.f-back   { transform: rotateY(180deg) translateZ(calc(var(--size, 160px) / 2)); }
+.f-cube-face.f-right  { transform: rotateY(90deg) translateZ(calc(var(--size, 160px) / 2)); }
+.f-cube-face.f-left   { transform: rotateY(-90deg) translateZ(calc(var(--size, 160px) / 2)); }
+.f-cube-face.f-top    { transform: rotateX(90deg) translateZ(calc(var(--size, 160px) / 2)); }
+.f-cube-face.f-bottom { transform: rotateX(-90deg) translateZ(calc(var(--size, 160px) / 2)); }
+
+.f-cube-face::before{
+  content:'';
+  position:absolute;inset:0;border-radius:inherit;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.18), transparent 55%),
+    linear-gradient(120deg, transparent 40%, rgba(255,255,255,.06) 50%, transparent 60%);
+  opacity:.7;
+  pointer-events:none;
+}
+
+.f-cube-icon{
+  position: absolute;
+  top: 50%; left: 50%;
+  width: calc(var(--size, 160px) * 0.42);
+  height: calc(var(--size, 160px) * 0.42);
+  transform: translate(-50%, -50%);
+  color: #fff;
+  z-index: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 0 18px rgba(190,180,255,.85)) drop-shadow(0 0 40px rgba(150,140,255,.45));
+  animation: iconPulse 4s ease-in-out infinite;
+}
+.f-cube-icon svg{
+  width:100%;height:100%;
+  stroke:currentColor;fill:none;
+  stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;
+  opacity:.95;
+}
+
+@keyframes iconPulse{
+  0%,100%{ filter: drop-shadow(0 0 18px rgba(190,180,255,.85)) drop-shadow(0 0 40px rgba(150,140,255,.45)); }
+  50%{ filter: drop-shadow(0 0 26px rgba(200,190,255,1)) drop-shadow(0 0 60px rgba(160,150,255,.65)); }
+}
+
+.f-cube-wrap:hover .f-cube-icon{ transform: translate(-50%, -50%) scale(1.15); transition: transform .5s var(--ease-spring); }
 
 @media (max-width:1279px){
-  .f-icon-card{
-    width: calc(var(--size, 160px) * 0.55);
-    height: calc(var(--size, 160px) * 0.55);
-    border-radius: calc(var(--size, 160px) * 0.13);
+  .f-cube-wrap{
+    width: calc(var(--size, 160px) * 0.6);
+    height: calc(var(--size, 160px) * 0.6);
   }
-  .f-icon-card svg{
-    width: calc(var(--size, 160px) * 0.21);
-    height: calc(var(--size, 160px) * 0.21);
+  .f-cube-icon{
+    width: calc(var(--size, 160px) * 0.24);
+    height: calc(var(--size, 160px) * 0.24);
   }
 }
 
 @media (prefers-reduced-motion: reduce){
   .f-icon-float{animation:none}
+  .f-cube{animation:none}
+  .f-cube-icon{animation:none}
 }
 
 /* ============================================================
-   INTRO
+   INTRO — CINEMATIC
    ============================================================ */
 #intro{
   position:fixed;inset:0;z-index:9999;overflow:hidden;
-  background:radial-gradient(ellipse at 50% 0%,#08080f 0%,#04040a 55%,#020205 100%);
+  background:radial-gradient(ellipse at 50% 30%,#08080f 0%,#04040a 55%,#020205 100%);
   display:flex;flex-direction:column;justify-content:center;align-items:center;
-  transition:opacity .9s cubic-bezier(.16,1,.3,1), filter .9s cubic-bezier(.16,1,.3,1);
+  transition:opacity 1s cubic-bezier(.16,1,.3,1), filter 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1);
 }
-#intro.fade-out{opacity:0;filter:blur(20px) scale(1.08);pointer-events:none}
+#intro.fade-out{opacity:0;filter:blur(24px) scale(1.15);pointer-events:none;transform:scale(1.05)}
+
+#intro-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:.85;
+  mix-blend-mode:screen;
+}
+
+.intro-grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:52px 52px;
+  mask-image:radial-gradient(ellipse 55% 45% at 50% 50%,#000 5%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 55% 45% at 50% 50%,#000 5%,transparent 75%);
+  animation:gridShift 40s linear infinite;
+}
+
+.intro-glow{
+  position:absolute;top:50%;left:50%;
+  width:900px;height:900px;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(140,130,255,.20) 0%, rgba(140,130,255,.06) 35%, transparent 65%);
+  filter:blur(40px);
+  animation:introGlowPulse 3.5s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes introGlowPulse{
+  0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}
+}
+
 .intro-content{
   position:relative;z-index:2;
   display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;
+  padding:0 20px;
 }
-.intro-logo{
-  width:120px;height:120px;border-radius:28px;
-  display:flex;justify-content:center;align-items:center;
-  background:#fff;color:#000;font-weight:800;font-size:48px;letter-spacing:-4px;
-  box-shadow:0 0 80px rgba(255,255,255,.6),0 0 160px rgba(160,140,255,.4);
-  animation:logoPulse 2s infinite alternate cubic-bezier(.45,0,.55,1), logoIn .9s cubic-bezier(.16,1,.3,1) both;
+
+/* Logo Cube */
+.intro-logo-stage{
+  perspective: 900px;
+  width: 130px; height: 130px;
+  position: relative;
+  margin-bottom: 34px;
+}
+.intro-logo-cube{
+  position: relative;
+  width:100%; height:100%;
+  transform-style: preserve-3d;
+  animation: introCubeEnter 1s cubic-bezier(.16,1,.3,1) both,
+             introCubeSpin 14s linear .8s infinite;
+}
+@keyframes introCubeEnter{
+  0%{ opacity:0; transform: rotateX(-60deg) rotateY(-90deg) scale(.3); }
+  100%{ opacity:1; transform: rotateX(0) rotateY(0) scale(1); }
+}
+@keyframes introCubeSpin{
+  0%   { transform: rotateX(-14deg) rotateY(0deg); }
+  100% { transform: rotateX(-14deg) rotateY(360deg); }
+}
+
+.intro-cube-face{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;color:#000;
+  font-weight:800;font-size:44px;letter-spacing:-3px;
+  border-radius:22px;
+  box-shadow:
+    inset 0 0 30px rgba(255,255,255,.6),
+    0 0 60px rgba(255,255,255,.35),
+    0 0 120px rgba(160,140,255,.35);
+  border:1px solid rgba(255,255,255,.55);
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+.intro-cube-face.f-front  { transform: translateZ(65px); }
+.intro-cube-face.f-back   { transform: rotateY(180deg) translateZ(65px); }
+.intro-cube-face.f-right  { transform: rotateY(90deg) translateZ(65px); }
+.intro-cube-face.f-left   { transform: rotateY(-90deg) translateZ(65px); }
+.intro-cube-face.f-top    { transform: rotateX(90deg) translateZ(65px); }
+.intro-cube-face.f-bottom { transform: rotateX(-90deg) translateZ(65px); }
+
+.intro-cube-face::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.9), transparent 55%);
+  pointer-events:none;
+}
+
+.intro-ring{
+  position:absolute;top:50%;left:50%;
+  width:170px;height:170px;
+  transform:translate(-50%,-50%) rotateX(75deg);
+  border:1px solid rgba(160,150,255,.35);
+  border-radius:50%;
+  animation:introRingSpin 6s linear infinite;
+  pointer-events:none;
+}
+.intro-ring.r2{
+  width:210px;height:210px;
+  border-color:rgba(160,150,255,.2);
+  animation-duration:9s;
+  animation-direction:reverse;
+}
+@keyframes introRingSpin{
+  0%  { transform:translate(-50%,-50%) rotateX(75deg) rotate(0deg); }
+  100%{ transform:translate(-50%,-50%) rotateX(75deg) rotate(360deg); }
+}
+
+.intro-title{
+  display:flex;gap:2px;
+  font-size: 22px; font-weight:800; letter-spacing: 12px;
+  text-transform:uppercase; color:#fff;
+  margin-left: 12px;
+}
+.intro-title span{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(18px) rotateX(-60deg);
+  animation: letterIn .65s cubic-bezier(.16,1,.3,1) forwards;
+  text-shadow: 0 0 20px rgba(160,150,255,.5);
+}
+@keyframes letterIn{
+  0%{ opacity:0; transform:translateY(18px) rotateX(-60deg); filter:blur(8px); }
+  60%{ opacity:1; filter:blur(0); }
+  100%{ opacity:1; transform:translateY(0) rotateX(0); filter:blur(0); }
+}
+
+.intro-sub{
+  margin-top:14px;font-size:10px;letter-spacing:6px;color:#8a8a93;text-transform:uppercase;
+  opacity:0;
+  animation: fadeIn 1s ease 1.4s forwards;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.intro-progress{
+  margin-top:52px;
+  width: min(320px, 70vw);
+  height:2px;
+  background:rgba(255,255,255,.08);
+  border-radius:2px;
+  overflow:hidden;
   position:relative;
 }
-@keyframes logoIn{
-  0%{opacity:0;transform:scale(.5) rotate(-12deg);filter:blur(20px)}
-  100%{opacity:1;transform:none;filter:none}
+.intro-progress-fill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,transparent,#fff,#a89bff,#fff,transparent);
+  background-size:200% 100%;
+  box-shadow:0 0 14px rgba(255,255,255,.9),0 0 30px rgba(160,150,255,.6);
+  border-radius:2px;
+  transition:width .1s linear;
+  animation:progressShimmer 2s linear infinite;
 }
-.intro-logo::after{
-  content:'';position:absolute;inset:-14px;border-radius:38px;
-  border:1px solid rgba(255,255,255,.2);
-  animation:ringSpin 8s linear infinite;
+.intro-pct{
+  margin-top:14px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:3px;
+  color:#8a8a93;
+  font-variant-numeric:tabular-nums;
 }
-.intro-logo::before{
-  content:'';position:absolute;inset:-28px;border-radius:48px;
-  border:1px solid rgba(160,150,255,.14);
-  animation:ringSpin 14s linear infinite reverse;
-}
-.intro-title{
-  margin-top:28px;font-size:20px;font-weight:800;letter-spacing:10px;
-  color:#fff;text-transform:uppercase;
-  animation:fadeInFlicker 1.8s ease forwards;
-}
-.intro-sub{
-  margin-top:10px;font-size:10px;letter-spacing:5px;color:#666;text-transform:uppercase;
-  opacity:0;animation:fadeIn 1s ease 1.4s forwards;
-}
+
 #flash{position:fixed;inset:0;background:#fff;z-index:10000;opacity:0;pointer-events:none;transition:opacity .5s ease-out}
 
 /* ============================================================
@@ -442,11 +610,19 @@ header::before{
   font-weight:800;font-size:14px;letter-spacing:-1px;flex-shrink:0;
   transition:transform .5s var(--ease-spring), box-shadow .4s;
   box-shadow:0 0 0 rgba(255,255,255,0);
+  position:relative;
+}
+.logo-mark::after{
+  content:'';position:absolute;inset:-2px;border-radius:12px;
+  border:1px solid rgba(160,150,255,.35);
+  opacity:0;
+  transition:opacity .4s;
 }
 .logo:hover .logo-mark{
   transform:rotate(-8deg) scale(1.08);
-  box-shadow:0 0 24px rgba(255,255,255,.5);
+  box-shadow:0 0 24px rgba(255,255,255,.5),0 0 44px rgba(160,150,255,.4);
 }
+.logo:hover .logo-mark::after{opacity:1}
 .header-actions{display:flex;gap:10px;align-items:center}
 
 /* ============================================================
@@ -464,7 +640,7 @@ header::before{
 }
 .btn:hover{letter-spacing:2px}
 .btn:active{transform:scale(.96)}
-.btn-primary{background:#fff;color:#000;box-shadow:0 0 25px rgba(255,255,255,.22),0 8px 24px rgba(0,0,0,.4)}
+.btn-primary{background:#fff;color:#000;box-shadow:0 0 25px rgba(255,255,255,.22),0 8px 24px rgba(0,0,0,.4),0 0 60px rgba(160,150,255,.2)}
 .btn-primary::before{
   content:'';position:absolute;inset:0;
   background:linear-gradient(120deg,transparent 25%,rgba(0,0,0,.10) 50%,transparent 75%);
@@ -478,7 +654,7 @@ header::before{
   background:radial-gradient(circle at center,rgba(255,255,255,.5),transparent 60%);
   opacity:0;transition:opacity .4s;pointer-events:none;z-index:-1;
 }
-.btn-primary:hover{box-shadow:0 0 40px rgba(255,255,255,.5),0 12px 32px rgba(0,0,0,.5)}
+.btn-primary:hover{box-shadow:0 0 40px rgba(255,255,255,.5),0 12px 32px rgba(0,0,0,.5),0 0 80px rgba(160,150,255,.35)}
 .btn-primary:hover::after{opacity:.5}
 .btn-ghost{background:rgba(255,255,255,.04);color:#fff;border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px)}
 .btn-ghost::before{
@@ -515,8 +691,21 @@ main{position:relative;z-index:2}
   background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin-bottom:20px;
   backdrop-filter:blur(10px);
   transition:all .4s var(--ease);
+  position:relative;
+}
+.section-label::before{
+  content:'';position:absolute;inset:-1px;border-radius:inherit;
+  background:linear-gradient(120deg,transparent 30%,rgba(160,150,255,.35) 50%,transparent 70%);
+  background-size:250% 100%;
+  animation:badgeShine 5s linear infinite;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  padding:1px;pointer-events:none;
+  opacity:0;
+  transition:opacity .4s;
 }
 .section-label:hover{color:#fff;border-color:rgba(255,255,255,.25);letter-spacing:4px}
+.section-label:hover::before{opacity:1}
 .section-title{
   display:block;
   font-size:clamp(28px,4.2vw,54px);font-weight:800;letter-spacing:-2px;line-height:1.08;
@@ -574,12 +763,21 @@ main{position:relative;z-index:2}
   font-style:normal;
   position:relative;
   display:inline-block;
+  background: linear-gradient(120deg, #fff 0%, #a89bff 25%, #7ec5ff 50%, #ff9ecb 75%, #fff 100%);
+  background-size: 300% auto;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation: accentFlow 6s ease-in-out infinite;
+}
+@keyframes accentFlow{
+  0%,100%{ background-position: 0% 50%; }
+  50%{ background-position: 100% 50%; }
 }
 .hero-h1 .accent::after{
   content:'';
   position:absolute;
   inset:-10px -20px;
-  background:radial-gradient(ellipse at center,rgba(160,150,255,.18) 0%,transparent 65%);
+  background:radial-gradient(ellipse at center,rgba(160,150,255,.20) 0%,transparent 65%);
   filter:blur(18px);
   z-index:-1;
   animation:accentGlow 4s ease-in-out infinite;
@@ -684,7 +882,7 @@ main{position:relative;z-index:2}
 .cat-arrow svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
 /* ============================================================
-   EXTENDED SERVICES (новые большие карточки)
+   EXTENDED SERVICES
    ============================================================ */
 .extended-services{
   margin-top:110px;
@@ -1148,7 +1346,7 @@ input[type="number"]{-moz-appearance:textfield}
 }
 
 /* ============================================================
-   BOTTOM NAV — с усиленной подсветкой границ
+   BOTTOM NAV
    ============================================================ */
 .bottom-nav{
   position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
@@ -1160,14 +1358,10 @@ input[type="number"]{-moz-appearance:textfield}
   border:1px solid rgba(255,255,255,.22);
   border-radius:34px;
   box-shadow:
-    /* глубокая тень снизу */
     0 24px 60px rgba(0,0,0,.75),
-    /* внутренний светлый кант сверху */
     inset 0 1px 0 rgba(255,255,255,.18),
-    /* тонкое светлое кольцо по контуру — видно при ярком свете */
     0 0 0 1px rgba(255,255,255,.10),
     0 0 0 2px rgba(255,255,255,.04),
-    /* мягкое свечение вокруг панели */
     0 0 28px rgba(200,200,255,.22),
     0 0 60px rgba(170,170,255,.12),
     0 0 110px rgba(150,150,255,.06);
@@ -1365,7 +1559,6 @@ input[type="number"]{-moz-appearance:textfield}
   20%,24%,55%{opacity:.4}
   from{opacity:0;transform:translateY(10px)}
 }
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
 </style>
@@ -1374,6 +1567,7 @@ input[type="number"]{-moz-appearance:textfield}
 
 <div class="scroll-progress"><div class="scroll-progress-bar" id="scroll-bar"></div></div>
 <div class="cursor-glow" id="cursor-glow"></div>
+<div class="cursor-dot" id="cursor-dot"></div>
 
 <div id="bg-layer">
   <div class="bg-flow"></div>
@@ -1384,6 +1578,7 @@ input[type="number"]{-moz-appearance:textfield}
   <div class="bg-topglow"></div>
   <div class="bg-grid"></div>
   <div class="bg-stars"></div>
+  <canvas id="bg-particles"></canvas>
   <div class="bg-vignette"></div>
   <div class="bg-noise"></div>
 </div>
@@ -1391,64 +1586,108 @@ input[type="number"]{-moz-appearance:textfield}
 <div id="flash"></div>
 
 <div id="intro">
-  <div class="bg-flow"></div>
-  <div class="bg-conic"></div>
-  <div class="bg-topglow"></div>
-  <div class="bg-grid"></div>
-  <div class="bg-vignette"></div>
-  <div class="bg-noise"></div>
+  <canvas id="intro-canvas"></canvas>
+  <div class="intro-grid-bg"></div>
+  <div class="intro-glow"></div>
   <div class="intro-content">
-    <div class="intro-logo">SC</div>
-    <div class="intro-title">SCALECORE</div>
+    <div class="intro-logo-stage">
+      <div class="intro-ring"></div>
+      <div class="intro-ring r2"></div>
+      <div class="intro-logo-cube">
+        <div class="intro-cube-face f-front">SC</div>
+        <div class="intro-cube-face f-back">SC</div>
+        <div class="intro-cube-face f-right">SC</div>
+        <div class="intro-cube-face f-left">SC</div>
+        <div class="intro-cube-face f-top">SC</div>
+        <div class="intro-cube-face f-bottom">SC</div>
+      </div>
+    </div>
+    <div class="intro-title" id="intro-title">
+      <span>S</span><span>C</span><span>A</span><span>L</span><span>E</span><span>C</span><span>O</span><span>R</span><span>E</span>
+    </div>
     <div class="intro-sub">СИСТЕМА ПРОДАЖ ДЛЯ БИЗНЕСА</div>
+    <div class="intro-progress">
+      <div class="intro-progress-fill" id="intro-bar-fill"></div>
+    </div>
+    <div class="intro-pct" id="intro-pct">0%</div>
   </div>
 </div>
 
 <div id="toast-container"></div>
 
-<!-- ============ FLOATING SIDE ICONS ============ -->
+<!-- ============ FLOATING 3D CUBES ============ -->
 <div class="float-icons" id="float-icons" aria-hidden="true">
 
   <!-- ===================== ЛЕВЫЙ КЛАСТЕР ===================== -->
   <div class="f-icon" data-side="left" data-depth="0.85"
-       style="--x:-55px;--y:8%;--rot:-14deg;--size:220px;--z:1;--anim:iconFloatA;--dur:9s;--delay:-1s;--exit-delay:0s;">
+       style="--x:-55px;--y:8%;--rot:-14deg;--size:200px;--z:1;--anim:iconFloatA;--dur:9s;--delay:-1s;--exit-delay:0s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
-          </svg>
+        <div class="f-cube-wrap">
+          <div class="f-cube" style="--spin-dur:22s;">
+            <div class="f-cube-face f-front"></div>
+            <div class="f-cube-face f-back"></div>
+            <div class="f-cube-face f-right"></div>
+            <div class="f-cube-face f-left"></div>
+            <div class="f-cube-face f-top"></div>
+            <div class="f-cube-face f-bottom"></div>
+          </div>
+          <div class="f-cube-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="f-icon" data-side="left" data-depth="1.2"
-       style="--x:-110px;--y:18%;--rot:-7deg;--size:380px;--z:2;--anim:iconFloatB;--dur:11s;--delay:-2.5s;--exit-delay:.07s;">
+       style="--x:-110px;--y:18%;--rot:-7deg;--size:340px;--z:2;--anim:iconFloatB;--dur:11s;--delay:-2.5s;--exit-delay:.07s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="7" rx="2"/>
-            <rect x="2" y="14" width="20" height="7" rx="2"/>
-            <line x1="6" y1="6.5" x2="6.01" y2="6.5"/>
-            <line x1="6" y1="17.5" x2="6.01" y2="17.5"/>
-          </svg>
+        <div class="f-cube-wrap">
+          <div class="f-cube" style="--spin-dur:28s;--spin-dir:reverse;">
+            <div class="f-cube-face f-front"></div>
+            <div class="f-cube-face f-back"></div>
+            <div class="f-cube-face f-right"></div>
+            <div class="f-cube-face f-left"></div>
+            <div class="f-cube-face f-top"></div>
+            <div class="f-cube-face f-bottom"></div>
+          </div>
+          <div class="f-cube-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="3" width="20" height="7" rx="2"/>
+              <rect x="2" y="14" width="20" height="7" rx="2"/>
+              <line x1="6" y1="6.5" x2="6.01" y2="6.5"/>
+              <line x1="6" y1="17.5" x2="6.01" y2="17.5"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="f-icon" data-side="left" data-depth="1.0"
-       style="--x:-42px;--y:50%;--rot:-20deg;--size:260px;--z:3;--anim:iconFloatC;--dur:10s;--delay:-3s;--exit-delay:.14s;">
+       style="--x:-42px;--y:50%;--rot:-20deg;--size:240px;--z:3;--anim:iconFloatC;--dur:10s;--delay:-3s;--exit-delay:.14s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="18" rx="2.5"/>
-            <polyline points="7 8.5 10 11.5 7 14.5"/>
-            <line x1="12" y1="14.5" x2="17" y2="14.5"/>
-          </svg>
+        <div class="f-cube-wrap">
+          <div class="f-cube" style="--spin-dur:25s;">
+            <div class="f-cube-face f-front"></div>
+            <div class="f-cube-face f-back"></div>
+            <div class="f-cube-face f-right"></div>
+            <div class="f-cube-face f-left"></div>
+            <div class="f-cube-face f-top"></div>
+            <div class="f-cube-face f-bottom"></div>
+          </div>
+          <div class="f-cube-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="3" width="20" height="18" rx="2.5"/>
+              <polyline points="7 8.5 10 11.5 7 14.5"/>
+              <line x1="12" y1="14.5" x2="17" y2="14.5"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -1456,46 +1695,76 @@ input[type="number"]{-moz-appearance:textfield}
 
   <!-- ===================== ПРАВЫЙ КЛАСТЕР ===================== -->
   <div class="f-icon" data-side="right" data-depth="0.85"
-       style="--x:-55px;--y:9%;--rot:13deg;--size:220px;--z:1;--anim:iconFloatE;--dur:9.5s;--delay:-1.5s;--exit-delay:.04s;">
+       style="--x:-55px;--y:9%;--rot:13deg;--size:200px;--z:1;--anim:iconFloatE;--dur:9.5s;--delay:-1.5s;--exit-delay:.04s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 18 22 12 16 6"/>
-            <polyline points="8 6 2 12 8 18"/>
-          </svg>
+        <div class="f-cube-wrap">
+          <div class="f-cube" style="--spin-dur:24s;">
+            <div class="f-cube-face f-front"></div>
+            <div class="f-cube-face f-back"></div>
+            <div class="f-cube-face f-right"></div>
+            <div class="f-cube-face f-left"></div>
+            <div class="f-cube-face f-top"></div>
+            <div class="f-cube-face f-bottom"></div>
+          </div>
+          <div class="f-cube-icon">
+            <svg viewBox="0 0 24 24">
+              <polyline points="16 18 22 12 16 6"/>
+              <polyline points="8 6 2 12 8 18"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="f-icon" data-side="right" data-depth="1.2"
-       style="--x:-110px;--y:19%;--rot:7deg;--size:380px;--z:2;--anim:iconFloatF;--dur:10.5s;--delay:-2s;--exit-delay:.11s;">
+       style="--x:-110px;--y:19%;--rot:7deg;--size:340px;--z:2;--anim:iconFloatF;--dur:10.5s;--delay:-2s;--exit-delay:.11s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 17h14"/>
-            <path d="M6 17V9.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 18 9.5V17"/>
-            <path d="M9 8V6h6v2"/>
-            <circle cx="8" cy="18" r="1.5"/>
-            <circle cx="16" cy="18" r="1.5"/>
-          </svg>
+        <div class="f-cube-wrap">
+          <div class="f-cube" style="--spin-dur:30s;--spin-dir:reverse;">
+            <div class="f-cube-face f-front"></div>
+            <div class="f-cube-face f-back"></div>
+            <div class="f-cube-face f-right"></div>
+            <div class="f-cube-face f-left"></div>
+            <div class="f-cube-face f-top"></div>
+            <div class="f-cube-face f-bottom"></div>
+          </div>
+          <div class="f-cube-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 17h14"/>
+              <path d="M6 17V9.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 18 9.5V17"/>
+              <path d="M9 8V6h6v2"/>
+              <circle cx="8" cy="18" r="1.5"/>
+              <circle cx="16" cy="18" r="1.5"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="f-icon" data-side="right" data-depth="1.0"
-       style="--x:-42px;--y:52%;--rot:17deg;--size:260px;--z:3;--anim:iconFloatD;--dur:11s;--delay:-3.5s;--exit-delay:.18s;">
+       style="--x:-42px;--y:52%;--rot:17deg;--size:240px;--z:3;--anim:iconFloatD;--dur:11s;--delay:-3.5s;--exit-delay:.18s;">
     <div class="f-icon-parallax">
       <div class="f-icon-float">
-        <div class="f-icon-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <ellipse cx="12" cy="5" rx="8" ry="3"/>
-            <path d="M20 12c0 1.66-3.58 3-8 3s-8-1.34-8-3"/>
-            <path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>
-          </svg>
+        <div class="f-cube-wrap">
+          <div class="f-cube" style="--spin-dur:26s;">
+            <div class="f-cube-face f-front"></div>
+            <div class="f-cube-face f-back"></div>
+            <div class="f-cube-face f-right"></div>
+            <div class="f-cube-face f-left"></div>
+            <div class="f-cube-face f-top"></div>
+            <div class="f-cube-face f-bottom"></div>
+          </div>
+          <div class="f-cube-icon">
+            <svg viewBox="0 0 24 24">
+              <ellipse cx="12" cy="5" rx="8" ry="3"/>
+              <path d="M20 12c0 1.66-3.58 3-8 3s-8-1.34-8-3"/>
+              <path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -1731,9 +2000,6 @@ input[type="number"]{-moz-appearance:textfield}
 <script>
 /* ============================================================
    CONFIG
-   Если фронт обслуживается тем же сервером (Railway) — оставь пусто.
-   Если фронт лежит отдельно — укажи URL бэкенда:
-   const API_BASE = 'https://scalecore.up.railway.app';
    ============================================================ */
 const API_BASE = '';
 
@@ -1748,7 +2014,7 @@ const state = {
 };
 
 /* ============================================================
-   DATA (каталог и тарифы на фронте)
+   DATA
    ============================================================ */
 const CATALOG = [
   { id:'restaurant', name:'Рестораны и кафе', desc:'Меню, бронь столов, доставка, интеграция с iiko и R-Keeper.', price:'от 25 000 ₽', icon:'<path d="M3 2v7c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V2"/><path d="M5 2v20"/><path d="M15 2c-1.5 1-3 3-3 5s1.5 4 3 5v10"/>' },
@@ -1763,9 +2029,6 @@ const CATALOG = [
   { id:'sales-system', name:'Система продаж', desc:'Связка Авито и сайта в единый поток заявок. Каждая площадка работает на результат.', price:'от 80 000 ₽', icon:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/>' }
 ];
 
-/* ============================================================
-   EXTENDED SERVICES — новые карточки
-   ============================================================ */
 const EXTENDED_SERVICES = [
   {
     id: 'audit-listing',
@@ -1811,32 +2074,17 @@ const PRICING = [
    ============================================================ */
 window.addEventListener('load', () => {
   document.body.classList.add('home-page');
+  document.body.classList.add('intro-active');
 
-  setTimeout(() => {
-    const intro = document.getElementById('intro');
-    const flash = document.getElementById('flash');
-    if (intro) {
-      intro.classList.add('fade-out');
-      setTimeout(() => {
-        intro.style.display = 'none';
-        intro.style.visibility = 'hidden';
-      }, 900);
-    }
-    if (flash) {
-      flash.style.opacity = '1';
-      setTimeout(() => { flash.style.opacity = '0'; }, 300);
-    }
-    activateReveal(document.getElementById('page-home'));
-  }, 2200);
+  // Setup intro title letters with staggered delays
+  const titleSpans = document.querySelectorAll('#intro-title span');
+  titleSpans.forEach((s, i) => {
+    s.style.animationDelay = (0.9 + i * 0.07) + 's';
+  });
 
-  setTimeout(() => {
-    const intro = document.getElementById('intro');
-    if (intro && intro.style.display !== 'none') {
-      intro.classList.add('fade-out');
-      intro.style.display = 'none';
-      intro.style.visibility = 'hidden';
-    }
-  }, 4000);
+  initBgParticles();
+  initIntroParticles();
+  runIntro();
 
   renderCatalog();
   renderExtendedServices();
@@ -1848,11 +2096,213 @@ window.addEventListener('load', () => {
   initCardCursor();
   initScrollProgress();
   initCursorGlow();
+  initCursorDot();
   initMagneticButtons();
   initTilt();
   initCounters();
   initFloatIcons();
 });
+
+/* ============================================================
+   INTRO SEQUENCE
+   ============================================================ */
+function runIntro(){
+  const intro = document.getElementById('intro');
+  const pctEl = document.getElementById('intro-pct');
+  const barEl = document.getElementById('intro-bar-fill');
+  const flash = document.getElementById('flash');
+
+  const start = performance.now();
+  const dur = 2300;
+
+  function tick(now){
+    const p = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(eased * 100);
+    if (pctEl) pctEl.textContent = val + '%';
+    if (barEl) barEl.style.width = val + '%';
+    if (p < 1) requestAnimationFrame(tick);
+    else finishIntro();
+  }
+
+  function finishIntro(){
+    // Flash
+    if (flash) {
+      flash.style.opacity = '1';
+      setTimeout(() => { flash.style.opacity = '0'; }, 280);
+    }
+    // Fade out intro
+    setTimeout(() => {
+      if (intro) intro.classList.add('fade-out');
+      setTimeout(() => {
+        if (intro) {
+          intro.style.display = 'none';
+          intro.style.visibility = 'hidden';
+        }
+        document.body.classList.remove('intro-active');
+        activateReveal(document.getElementById('page-home'));
+      }, 1000);
+    }, 150);
+  }
+
+  requestAnimationFrame(tick);
+
+  // Safety fallback
+  setTimeout(() => {
+    const int = document.getElementById('intro');
+    if (int && int.style.display !== 'none') {
+      int.classList.add('fade-out');
+      int.style.display = 'none';
+      int.style.visibility = 'hidden';
+      document.body.classList.remove('intro-active');
+      activateReveal(document.getElementById('page-home'));
+    }
+  }, 5000);
+}
+
+/* ============================================================
+   BG PARTICLES
+   ============================================================ */
+function initBgParticles(){
+  const canvas = document.getElementById('bg-particles');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize(){
+    w = canvas.width = Math.floor(window.innerWidth * dpr);
+    h = canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+  }
+
+  function createParticles(count){
+    particles = [];
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.28 * dpr,
+        vy: (Math.random() - 0.5) * 0.28 * dpr,
+        r: (Math.random() * 1.4 + 0.4) * dpr,
+        alpha: Math.random() * 0.5 + 0.2,
+        hue: Math.random() < 0.5 ? 250 : 210
+      });
+    }
+  }
+
+  let mouseX = w / 2, mouseY = h / 2;
+  window.addEventListener('mousemove', e => {
+    mouseX = e.clientX * dpr;
+    mouseY = e.clientY * dpr;
+  }, { passive: true });
+
+  function draw(){
+    ctx.clearRect(0, 0, w, h);
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // slight attraction to mouse
+      const dx = mouseX - p.x;
+      const dy = mouseY - p.y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < 40000 * dpr) {
+        p.vx += (dx / Math.sqrt(d2 + 1)) * 0.012;
+        p.vy += (dy / Math.sqrt(d2 + 1)) * 0.012;
+      }
+
+      // dampen
+      p.vx *= 0.995;
+      p.vy *= 0.995;
+
+      if (p.x < -20) p.x = w + 20;
+      if (p.x > w + 20) p.x = -20;
+      if (p.y < -20) p.y = h + 20;
+      if (p.y > h + 20) p.y = -20;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 80%, 78%, ${p.alpha})`;
+      ctx.shadowBlur = 12 * dpr;
+      ctx.shadowColor = `hsla(${p.hue}, 90%, 70%, ${p.alpha * 0.9})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  const count = window.innerWidth < 768 ? 40 : 85;
+  createParticles(count);
+  window.addEventListener('resize', () => {
+    resize();
+    createParticles(window.innerWidth < 768 ? 40 : 85);
+  });
+  draw();
+}
+
+/* ============================================================
+   INTRO PARTICLES
+   ============================================================ */
+function initIntroParticles(){
+  const canvas = document.getElementById('intro-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize(){
+    w = canvas.width = Math.floor(window.innerWidth * dpr);
+    h = canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+  }
+
+  function createParticles(count){
+    particles = [];
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.random() * Math.min(w, h) * 0.35;
+      particles.push({
+        angle,
+        radius,
+        speed: (Math.random() * 0.002 + 0.0005),
+        r: (Math.random() * 1.6 + 0.5) * dpr,
+        alpha: Math.random() * 0.7 + 0.3,
+        hue: Math.random() < 0.5 ? 250 : 200,
+        z: Math.random() * 0.4 + 0.6
+      });
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    for (const p of particles) {
+      p.angle += p.speed;
+      const x = cx + Math.cos(p.angle) * p.radius * p.z;
+      const y = cy + Math.sin(p.angle) * p.radius * p.z * 0.6;
+      ctx.beginPath();
+      ctx.arc(x, y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 85%, 78%, ${p.alpha})`;
+      ctx.shadowBlur = 14 * dpr;
+      ctx.shadowColor = `hsla(${p.hue}, 90%, 70%, ${p.alpha * 0.8})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  createParticles(window.innerWidth < 768 ? 40 : 80);
+  window.addEventListener('resize', () => {
+    resize();
+    createParticles(window.innerWidth < 768 ? 40 : 80);
+  });
+  draw();
+}
 
 /* ============================================================
    NAV
@@ -1965,7 +2415,6 @@ function orderExtendedService(id){
   setTimeout(() => {
     const sel = document.getElementById('order-type');
     if (sel) {
-      // Мапим на существующие типы или custom
       const map = { 'audit-listing':'custom', 'audit-shop':'custom', 'shop-turnkey':'shop' };
       sel.value = map[id] || 'custom';
       sel.dispatchEvent(new Event('change'));
@@ -2087,7 +2536,7 @@ function initBudgetPicker(){
 }
 
 /* ============================================================
-   REVIEWS — загрузка с сервера
+   REVIEWS
    ============================================================ */
 async function loadReviews(){
   try {
@@ -2236,7 +2685,7 @@ async function submitReview(e){
 }
 
 /* ============================================================
-   ORDER — отправка на сервер (сервер также шлёт Bark)
+   ORDER
    ============================================================ */
 async function submitOrder(e){
   e.preventDefault();
@@ -2342,6 +2791,32 @@ function initCursorGlow(){
     cx += (tx - cx) * 0.10;
     cy += (ty - cy) * 0.10;
     glow.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+    requestAnimationFrame(loop);
+  })();
+}
+
+function initCursorDot(){
+  const dot = document.getElementById('cursor-dot');
+  if (!dot || matchMedia('(max-width:900px)').matches) return;
+  let tx = -100, ty = -100, cx = -100, cy = -100;
+  document.addEventListener('mousemove', e => {
+    tx = e.clientX; ty = e.clientY;
+    // scale on hover for interactive
+    const el = e.target;
+    const interactive = el.closest('button, a, .cat-card, .svc-card, .price-card, .nav-item, .f-cube-wrap');
+    dot.style.transform = interactive ? 'scale(2.2)' : 'scale(1)';
+  }, { passive: true });
+  document.addEventListener('mouseleave', () => {
+    dot.style.opacity = '0';
+  });
+  document.addEventListener('mouseenter', () => {
+    dot.style.opacity = '1';
+  });
+  (function loop(){
+    cx += (tx - cx) * 0.22;
+    cy += (ty - cy) * 0.22;
+    dot.style.left = cx + 'px';
+    dot.style.top = cy + 'px';
     requestAnimationFrame(loop);
   })();
 }
